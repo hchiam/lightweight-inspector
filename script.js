@@ -227,8 +227,10 @@ ${dialogSelector} {
     try {
       const output = eval(value);
       console.info(output);
+      $(jsInspectorSelector).scrollTo(0, $(jsInspectorSelector).scrollHeight);
     } catch (e) {
       console.error(e);
+      $(jsInspectorSelector).scrollTo(0, $(jsInspectorSelector).scrollHeight);
     }
   }
 
