@@ -257,20 +257,19 @@ ${dialogSelector} {
 
   function processAttributes(startTagText) {
     const attributeRegex = / ([^=]+?="[^">]*?")/;
-    return startTagText
-      .split(attributeRegex)
-      .slice(1) // so search even instead of odd:
-      .map((text, i) => {
-        const isAttribute = i % 2 === 0; // even index = split delimiters
-        if (isAttribute) {
-          return el("span", text, {
-            class: "attribute-input",
-            contenteditable: true,
-          });
-        } else {
-          return el("span", text + " ");
-        }
-      });
+    const matches = startTagText.split(attributeRegex).slice(1); // so search even instead of odd
+    if (!matches.length) return [el("span", ">")];
+    return matches.map((text, i) => {
+      const isAttribute = i % 2 === 0; // even index = split delimiters
+      if (isAttribute) {
+        return el("span", text, {
+          class: "attribute-input",
+          contenteditable: true,
+        });
+      } else {
+        return el("span", text + " ");
+      }
+    });
   }
 
   function inspectCSS() {
