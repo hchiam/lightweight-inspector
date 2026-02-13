@@ -110,9 +110,17 @@ ${dialogSelector} {
             flex: 1;
             margin-block: 1.5px;
             overflow: auto;
+            p {
+                margin: 0;
+            }
         }
         ${htmlInspectorSelector} {
             outline: 1px solid red;
+            background: #00000080;
+            color: white;
+            button {
+                text-align: start;
+            }
         }
         ${cssInspectorSelector} {
             outline: 1px solid blue;
@@ -128,7 +136,6 @@ ${dialogSelector} {
                 min-width: 44px;
             }
             p {
-                margin: 0;
                 opacity: 0.8;
             }
         }
@@ -159,6 +166,25 @@ ${dialogSelector} {
       id: htmlInspectorSelector.replace("#", ""),
     });
     inspectorContents.append(htmlInspector);
+
+    const elements = turnHtmlTagsIntoButtons(
+      new XMLSerializer().serializeToString(document),
+    );
+    elements.forEach((element) => {
+      htmlInspector.append(element);
+    });
+  }
+
+  function turnHtmlTagsIntoButtons(htmlText) {
+    const elements = htmlText.split(/(<(?!\/).+?>)/).map((text, i) => {
+      const isStartTag = i % 2 !== 0;
+      if (isStartTag) {
+        return el("p", el("button", text));
+      } else {
+        return el("p", text);
+      }
+    });
+    return elements;
   }
 
   function inspectCSS() {
