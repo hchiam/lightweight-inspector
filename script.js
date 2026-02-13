@@ -101,10 +101,26 @@ ${dialogSelector} {
     .red { background: red; }
     .blue { background: lightblue; }
     .yellow { background: yellow; }
-    ${jsInspectorSelector} {
-        p {
-            margin: 0;
-            opacity: 0.8;
+    ${inspectorContentsSelector} {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        > * {
+            flex: 1;
+            margin-block: 1.5px;
+        }
+        ${htmlInspectorSelector} {
+            outline: 1px solid red;
+        }
+        ${cssInspectorSelector} {
+            outline: 1px solid blue;
+        }
+        ${jsInspectorSelector} {
+            outline: 1px solid yellow;
+            p {
+                margin: 0;
+                opacity: 0.8;
+            }
         }
     }
 }
