@@ -94,10 +94,12 @@ ${dialogSelector} {
         padding-inline-start: 0.25rem;
         padding-block-start: 0.25rem;
         background: #0f0e;
-        font-size: smaller;
+        color: black;
+        font-size: 0.5rem;
     }
     .white { background: white; }
     .red { background: red; }
+    .blue { background: lightblue; }
     .yellow { background: yellow; }
     ${jsInspectorSelector} {
         p {
@@ -150,6 +152,21 @@ ${dialogSelector} {
     });
     inspectorContents.append(jsInspector);
 
+    const consoleInput = el("input", null, { id: "console-input" });
+    const consoleInputButton = el("button", "Send", {
+      id: "console-input-button",
+    });
+    jsInspector.append(consoleInput);
+    jsInspector.append(consoleInputButton);
+    consoleInput.addEventListener("keyup", (event) => {
+      if (event.key === "Enter") {
+        runConsoleInput(consoleInput);
+      }
+    });
+    consoleInputButton.addEventListener("click", () => {
+      runConsoleInput(consoleInput);
+    });
+
     captureConsole({
       logCallback: function () {
         jsInspector.append(createConsoleMessage("white", arguments));
@@ -164,7 +181,7 @@ ${dialogSelector} {
         jsInspector.append(createConsoleMessage("red", arguments));
       },
       infoCallback: function () {
-        jsInspector.append(createConsoleMessage("white", arguments));
+        jsInspector.append(createConsoleMessage("blue", arguments));
       },
       traceCallback: function () {
         jsInspector.append(createConsoleMessage("white", arguments));
@@ -173,6 +190,17 @@ ${dialogSelector} {
         jsInspector.append(createConsoleMessage("yellow", arguments));
       },
     });
+  }
+
+  function runConsoleInput(consoleInput) {
+    const value = consoleInput.value;
+    console.log(value);
+    try {
+      const output = eval(value);
+      console.info(output);
+    } catch (e) {
+      console.error(e);
+    }
   }
 
   function captureConsole({
@@ -225,10 +253,29 @@ ${dialogSelector} {
       warnCallback(...arguments);
       existingConsolewarn(...arguments);
     };
+
+    window.addEventListener("error", function (event) {
+      errorCallback(JSON.stringify(event));
+    });
+
+    window.addEventListener("unhandledrejection", function (event) {
+      errorCallback(JSON.stringify(event));
+    });
   }
 
   function createConsoleMessage(colour, args) {
-    const text = Array.from(args).join(" ");
+    const argsArray = Array.from(args);
+    const text = argsArray.map(handleHtmlElementInConsole).join(" ");
     return el("p", text, { className: colour });
+  }
+
+  function handleHtmlElementInConsole(arg) {
+    if (arg instanceof HTMLElement) {
+      return `<${arg.tagName.toLowerCase()}${Object.values(arg.attributes)
+        .map((attr) => " " + attr.name + '="' + attr.value + '"')
+        .join("")}>`;
+    } else {
+      return arg;
+    }
   }
 })();
