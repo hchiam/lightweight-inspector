@@ -373,24 +373,31 @@ ${dialogSelector} {
       },
       logCallback: function () {
         jsInspector.append(createConsoleMessage("white", arguments));
+        scrollToEndOfConsoleLog();
       },
       errorCallback: function () {
         jsInspector.append(createConsoleMessage("red", arguments));
+        scrollToEndOfConsoleLog();
       },
       debugCallback: function () {
         jsInspector.append(createConsoleMessage("white", arguments));
+        scrollToEndOfConsoleLog();
       },
       exceptionCallback: function () {
         jsInspector.append(createConsoleMessage("red", arguments));
+        scrollToEndOfConsoleLog();
       },
       infoCallback: function () {
         jsInspector.append(createConsoleMessage("blue", arguments));
+        scrollToEndOfConsoleLog();
       },
       traceCallback: function () {
         jsInspector.append(createConsoleMessage("white", arguments));
+        scrollToEndOfConsoleLog();
       },
       warnCallback: function () {
         jsInspector.append(createConsoleMessage("yellow", arguments));
+        scrollToEndOfConsoleLog();
       },
     });
   }
@@ -401,11 +408,15 @@ ${dialogSelector} {
     try {
       const output = eval(value);
       console.info(output);
-      $(jsInspectorSelector).scrollTo(0, $(jsInspectorSelector).scrollHeight);
+      scrollToEndOfConsoleLog();
     } catch (e) {
       console.error(e);
-      $(jsInspectorSelector).scrollTo(0, $(jsInspectorSelector).scrollHeight);
+      scrollToEndOfConsoleLog();
     }
+  }
+
+  function scrollToEndOfConsoleLog() {
+    $(jsInspectorSelector).scrollTo(0, $(jsInspectorSelector).scrollHeight);
   }
 
   function captureConsole({
