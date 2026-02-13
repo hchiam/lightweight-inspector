@@ -248,7 +248,10 @@ ${dialogSelector} {
     } else {
       const tagNameRegex = /<([^ >]+) ?/;
       const tagName = tagNameRegex.exec(startTagText)?.[1];
-      return el("button", tagName, { class: "tag-name", title: "show styles" });
+      return el("button", tagName, {
+        class: "tag-name",
+        title: "show styles for: " + tagName,
+      });
     }
   }
 
