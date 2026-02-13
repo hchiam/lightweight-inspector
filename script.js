@@ -125,6 +125,8 @@ ${dialogSelector} {
                 position: sticky;
                 inset-inline-start: 0;
                 inset-block-start: 0;
+                min-height: 44px;
+                min-width: 44px;
             }
             .start-tag {
                 display: flex;
@@ -193,7 +195,7 @@ ${dialogSelector} {
     });
     inspectorContents.append(htmlInspector);
 
-    const refreshButton = el("button", "refresh", {
+    const refreshButton = el("button", "refresh:", {
       id: refreshButtonID,
     });
     htmlInspector.append(refreshButton);
@@ -226,7 +228,13 @@ ${dialogSelector} {
     const elements = htmlText.split(startTagRegex).map((text, i) => {
       const isStartTag = i % 2 !== 0; // odd index = split delimiters
       if (isStartTag) {
-        return el("p", processAttributes(text), { class: "start-tag" });
+        return el(
+          "p",
+          [el("span", "<"), processTagName(text), ...processAttributes(text)],
+          {
+            class: "start-tag",
+          },
+        );
       } else {
         return el("p", text);
       }
@@ -234,16 +242,32 @@ ${dialogSelector} {
     return elements;
   }
 
+  function processTagName(startTagText) {
+    if (startTagText === "<!DOCTYPE html>") {
+      return el("span", startTagText.slice(1));
+    } else {
+      const tagNameRegex = /<([^ >]+) ?/;
+      const tagName = tagNameRegex.exec(startTagText)?.[1];
+      return el("button", tagName, { class: "tag-name", title: "show styles" });
+    }
+  }
+
   function processAttributes(startTagText) {
     const attributeRegex = / ([^=]+?="[^">]*?")/;
-    return startTagText.split(attributeRegex).map((text, i) => {
-      const isAttribute = i % 2 !== 0; // odd index = split delimiters
-      if (isAttribute) {
-        return el("span", text, { contenteditable: true });
-      } else {
-        return el("span", text + " ");
-      }
-    });
+    return startTagText
+      .split(attributeRegex)
+      .slice(1) // so search even instead of odd:
+      .map((text, i) => {
+        const isAttribute = i % 2 === 0; // even index = split delimiters
+        if (isAttribute) {
+          return el("span", text, {
+            class: "attribute-input",
+            contenteditable: true,
+          });
+        } else {
+          return el("span", text + " ");
+        }
+      });
   }
 
   function inspectCSS() {
