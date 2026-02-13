@@ -3,6 +3,20 @@
 
   const $$ = (s) => [...document.querySelectorAll(s)];
 
+  const dialogSelector = "#lightweight-inspector";
+  const inspectorContentsSelector = "#inspector-contents";
+  const htmlInspectorSelector = "#html-inspector";
+  const cssInspectorSelector = "#css-inspector";
+  const jsInspectorSelector = "#js-inspector";
+  let dialog = null;
+  let inspectorContents = null;
+
+  runMainLogic();
+  function runMainLogic() {
+    showDialog();
+    inspect();
+  }
+
   function el(tagName, insides, attributes) {
     const tag = document.createElement(tagName);
     if (insides) {
@@ -28,21 +42,25 @@
     return tag;
   }
 
-  const dialog = el("dialog", [
-    el("form", el("button", "x"), { method: "dialog" }),
-    el("p", "lightweight-inspector", { id: "title" }),
-    el(
-      "style",
-      `
-#lightweight-inspector,
-#lightweight-inspector::before,
-#lightweight-inspector::after,
-#lightweight-inspector *,
-#lightweight-inspector *::before,
-#lightweight-inspector *::after {
+  function showDialog() {
+    const alreadyExistingElement = $(dialogSelector);
+    if (!alreadyExistingElement) {
+      dialog = el("dialog", [
+        el("form", el("button", "x"), { method: "dialog" }),
+        el("p", "lightweight-inspector", { id: "title" }),
+        el("div", null, { id: inspectorContentsSelector.replace("#", "") }),
+        el(
+          "style",
+          `
+${dialogSelector},
+${dialogSelector}::before,
+${dialogSelector}::after,
+${dialogSelector} *,
+${dialogSelector} *::before,
+${dialogSelector} *::after {
     all: revert;
 }
-#lightweight-inspector {
+${dialogSelector} {
     background: #ffffff80;
     width: 100%;
     height: 100%;
@@ -78,11 +96,139 @@
         background: #0f0e;
         font-size: smaller;
     }
+    .white { background: white; }
+    .red { background: red; }
+    .yellow { background: yellow; }
+    ${jsInspectorSelector} {
+        p {
+            margin: 0;
+            opacity: 0.8;
+        }
+    }
 }
 `,
-    ),
-  ]);
-  dialog.id = "lightweight-inspector";
-  document.body.append(dialog);
-  dialog.showModal();
+        ),
+      ]);
+      dialog.id = dialogSelector.replace("#", "");
+      document.body.append(dialog);
+    } else {
+      dialog = alreadyExistingElement;
+    }
+    inspectorContents = dialog.querySelector(inspectorContentsSelector);
+    dialog.showModal();
+  }
+
+  function inspect() {
+    inspectHTML();
+    inspectCSS();
+    inspectJS();
+  }
+
+  function inspectHTML() {
+    if ($(htmlInspectorSelector)) return;
+
+    const htmlInspector = el("div", null, {
+      id: htmlInspectorSelector.replace("#", ""),
+    });
+    inspectorContents.append(htmlInspector);
+  }
+
+  function inspectCSS() {
+    if ($(cssInspectorSelector)) return;
+
+    const cssInspector = el("div", null, {
+      id: cssInspectorSelector.replace("#", ""),
+    });
+    inspectorContents.append(cssInspector);
+  }
+
+  function inspectJS() {
+    if ($(jsInspectorSelector)) return;
+
+    const jsInspector = el("div", null, {
+      id: jsInspectorSelector.replace("#", ""),
+    });
+    inspectorContents.append(jsInspector);
+
+    captureConsole({
+      logCallback: function () {
+        jsInspector.append(createConsoleMessage("white", arguments));
+      },
+      errorCallback: function () {
+        jsInspector.append(createConsoleMessage("red", arguments));
+      },
+      debugCallback: function () {
+        jsInspector.append(createConsoleMessage("white", arguments));
+      },
+      exceptionCallback: function () {
+        jsInspector.append(createConsoleMessage("red", arguments));
+      },
+      infoCallback: function () {
+        jsInspector.append(createConsoleMessage("white", arguments));
+      },
+      traceCallback: function () {
+        jsInspector.append(createConsoleMessage("white", arguments));
+      },
+      warnCallback: function () {
+        jsInspector.append(createConsoleMessage("yellow", arguments));
+      },
+    });
+  }
+
+  function captureConsole({
+    logCallback,
+    errorCallback,
+    debugCallback,
+    exceptionCallback,
+    infoCallback,
+    traceCallback,
+    warnCallback,
+  }) {
+    const existingConsolelog = console.log;
+    console.log = function () {
+      logCallback(...arguments);
+      existingConsolelog(...arguments);
+    };
+
+    const existingConsoleerror = console.error;
+    console.error = function () {
+      errorCallback(...arguments);
+      existingConsoleerror(...arguments);
+    };
+
+    const existingConsoledebug = console.debug;
+    console.debug = function () {
+      debugCallback(...arguments);
+      existingConsoledebug(...arguments);
+    };
+
+    const existingConsoleexception = console.exception;
+    console.exception = function () {
+      exceptionCallback(...arguments);
+      existingConsoleexception(...arguments);
+    };
+
+    const existingConsoleinfo = console.info;
+    console.info = function () {
+      infoCallback(...arguments);
+      existingConsoleinfo(...arguments);
+    };
+
+    const existingConsoletrace = console.trace;
+    console.trace = function () {
+      traceCallback(...arguments);
+      existingConsoletrace(...arguments);
+    };
+
+    const existingConsolewarn = console.warn;
+    console.warn = function () {
+      warnCallback(...arguments);
+      existingConsolewarn(...arguments);
+    };
+  }
+
+  function createConsoleMessage(colour, args) {
+    const text = Array.from(args).join(" ");
+    return el("p", text, { className: colour });
+  }
 })();
