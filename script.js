@@ -120,6 +120,7 @@ ${dialogSelector} {
             color: white;
             button {
                 text-align: start;
+                width: max-content;
             }
         }
         ${cssInspectorSelector} {
