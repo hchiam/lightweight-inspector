@@ -8,6 +8,9 @@
   const htmlInspectorSelector = "#html-inspector";
   const cssInspectorSelector = "#css-inspector";
   const jsInspectorSelector = "#js-inspector";
+
+  const refreshButtonID = "refresh-html-button";
+
   let dialog = null;
   let inspectorContents = null;
 
@@ -119,6 +122,11 @@ ${dialogSelector} {
             outline: 1px solid red;
             background: #00000080;
             color: white;
+            #${refreshButtonID} {
+                position: sticky;
+                inset-inline-start: 0;
+                inset-block-start: 0;
+            }
             .outline {
                 display: block;
                 width: max-content;
@@ -180,6 +188,26 @@ ${dialogSelector} {
     });
     inspectorContents.append(htmlInspector);
 
+    const refreshButton = el("button", "refresh", {
+      id: refreshButtonID,
+    });
+    htmlInspector.append(refreshButton);
+    refreshButton.addEventListener("click", () => {
+      clearHtmlInspector(htmlInspector, refreshButtonID);
+      repopulateHtmlInspector(htmlInspector);
+    });
+
+    clearHtmlInspector(htmlInspector, refreshButtonID);
+    repopulateHtmlInspector(htmlInspector);
+  }
+
+  function clearHtmlInspector(htmlInspector, refreshButtonID) {
+    [...htmlInspector.children]
+      .filter((child) => child.id !== refreshButtonID)
+      .forEach((child) => child.remove());
+  }
+
+  function repopulateHtmlInspector(htmlInspector) {
     const elements = processHtmlStartTags(
       new XMLSerializer().serializeToString(document),
     );
@@ -234,7 +262,7 @@ ${dialogSelector} {
       id: "console-input",
       placeholder: "js, e.g.: $('body') or $$('p')",
     });
-    const consoleInputButton = el("button", "Send", {
+    const consoleInputButton = el("button", "send", {
       id: "console-input-button",
     });
     jsInspector.append(consoleInput);
