@@ -4,9 +4,13 @@
 
 1) enable minimally inspecting only a few things in js/css/html in a browser on a mobile device, and
 
-2) make it easier to trust by making it easier to find and read the whole code on GitHub.
+2) make it easier to trust by making it easier to find and read [the whole code on GitHub](https://github.com/hchiam/lightweight-inspector/blob/main/script.js).
 
-## bookmarklet
+## script.js code
+
+<https://github.com/hchiam/lightweight-inspector/blob/main/script.js>
+
+## bookmarklet to run the [script.js](https://github.com/hchiam/lightweight-inspector/blob/main/script.js)
 
 ```js
 javascript:(()=>{
@@ -30,7 +34,3 @@ javascript:(()=>{
     }
 })();
 ```
-
-## code
-
-<https://github.com/hchiam/lightweight-inspector/blob/main/script.js>
