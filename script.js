@@ -101,7 +101,6 @@ ${dialogSelector} {
         height: calc(1rem + 1px);
         line-height: 1rem;
     }
-    .outline { outline: 1px solid lime; }
     .white { background: white; }
     .red { background: red; }
     .blue { background: lightblue; }
@@ -127,10 +126,12 @@ ${dialogSelector} {
                 inset-inline-start: 0;
                 inset-block-start: 0;
             }
-            .outline {
-                display: block;
+            .start-tag {
+                display: flex;
+                align-items: center;
                 width: max-content;
                 margin-block-start: 0.5rem;
+                background: #80000080;
             }
             span {
                 color: red;
@@ -139,8 +140,12 @@ ${dialogSelector} {
             span[contenteditable=""] {
                 background: black;
                 color: orange;
-                outline: 1px solid orange;
-                margin-inline: 1ch;
+                border: 1px solid orange;
+                margin-inline-start: 1ch;
+                padding-inline: 0.25rem;
+                min-height: 1.5rem;
+                display: flex;
+                align-items: center;
             }
         }
         ${cssInspectorSelector} {
@@ -221,7 +226,7 @@ ${dialogSelector} {
     const elements = htmlText.split(startTagRegex).map((text, i) => {
       const isStartTag = i % 2 !== 0; // odd index = split delimiters
       if (isStartTag) {
-        return el("p", processAttributes(text), { class: "outline" });
+        return el("p", processAttributes(text), { class: "start-tag" });
       } else {
         return el("p", text);
       }
