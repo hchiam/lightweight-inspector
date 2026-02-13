@@ -36,7 +36,7 @@
     }
     if (attributes) {
       Object.entries(attributes).forEach(([attribute, value]) => {
-        tag[attribute] = value;
+        tag.setAttribute(attribute, value);
       });
     }
     return tag;
@@ -98,6 +98,7 @@ ${dialogSelector} {
         height: calc(1rem + 1px);
         line-height: 1rem;
     }
+    .outline { outline: 1px solid lime; }
     .white { background: white; }
     .red { background: red; }
     .blue { background: lightblue; }
@@ -118,9 +119,20 @@ ${dialogSelector} {
             outline: 1px solid red;
             background: #00000080;
             color: white;
-            button {
-                text-align: start;
+            .outline {
+                display: block;
                 width: max-content;
+                margin-block-start: 0.5rem;
+            }
+            span {
+                color: red;
+            }
+            span[contenteditable="true"],
+            span[contenteditable=""] {
+                background: black;
+                color: orange;
+                outline: 1px solid orange;
+                margin-inline: 1ch;
             }
         }
         ${cssInspectorSelector} {
@@ -168,7 +180,7 @@ ${dialogSelector} {
     });
     inspectorContents.append(htmlInspector);
 
-    const elements = turnHtmlTagsIntoButtons(
+    const elements = processHtmlStartTags(
       new XMLSerializer().serializeToString(document),
     );
     elements.forEach((element) => {
@@ -176,16 +188,29 @@ ${dialogSelector} {
     });
   }
 
-  function turnHtmlTagsIntoButtons(htmlText) {
-    const elements = htmlText.split(/(<(?!\/).+?>)/).map((text, i) => {
-      const isStartTag = i % 2 !== 0;
+  function processHtmlStartTags(htmlText) {
+    const startTagRegex = /(<(?!\/).+?>)/;
+    const elements = htmlText.split(startTagRegex).map((text, i) => {
+      const isStartTag = i % 2 !== 0; // odd index = split delimiters
       if (isStartTag) {
-        return el("p", el("button", text));
+        return el("p", processAttributes(text), { class: "outline" });
       } else {
         return el("p", text);
       }
     });
     return elements;
+  }
+
+  function processAttributes(startTagText) {
+    const attributeRegex = / ([^=]+?="[^">]*?")/;
+    return startTagText.split(attributeRegex).map((text, i) => {
+      const isAttribute = i % 2 !== 0; // odd index = split delimiters
+      if (isAttribute) {
+        return el("span", text, { contenteditable: true });
+      } else {
+        return el("span", text + " ");
+      }
+    });
   }
 
   function inspectCSS() {
@@ -324,7 +349,7 @@ ${dialogSelector} {
   function createConsoleMessage(colour, args) {
     const argsArray = Array.from(args);
     const text = argsArray.map(handleHtmlElementInConsole).join(" ");
-    return el("p", text, { className: colour });
+    return el("p", text, { class: colour });
   }
 
   function handleHtmlElementInConsole(arg) {
