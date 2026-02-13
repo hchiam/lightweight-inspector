@@ -140,6 +140,7 @@ ${dialogSelector} {
                 width: max-content;
                 margin-block-start: 0.5rem;
                 background: #80000080;
+                clip-path: polygon(10px 0px, 0% 50%, 10px 100%, calc(100% - 10px) 100%, 100% 50%, calc(100% - 10px) 0px);
                 .tag-name {
                     min-height: 44px;
                     min-width: 44px;
