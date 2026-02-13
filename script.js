@@ -61,6 +61,7 @@
             width: 1rem;
             height: 1rem;
             font-size: 0.5rem;
+            font-weight: bold;
             display: flex;
             justify-content: center;
             align-items: center;
