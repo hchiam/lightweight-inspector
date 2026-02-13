@@ -87,7 +87,7 @@ ${dialogSelector} {
     }
     #title {
         position: fixed;
-        top: 0;
+        top: -2px;
         left: 0;
         padding: 0;
         margin: 0;
@@ -95,7 +95,8 @@ ${dialogSelector} {
         padding-block-start: 0.25rem;
         background: #0f0e;
         color: black;
-        font-size: 0.5rem;
+        height: calc(1rem + 1px);
+        line-height: 1rem;
     }
     .white { background: white; }
     .red { background: red; }
@@ -108,6 +109,7 @@ ${dialogSelector} {
         > * {
             flex: 1;
             margin-block: 1.5px;
+            overflow: auto;
         }
         ${htmlInspectorSelector} {
             outline: 1px solid red;
