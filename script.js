@@ -170,7 +170,10 @@ ${dialogSelector} {
     });
     inspectorContents.append(jsInspector);
 
-    const consoleInput = el("input", null, { id: "console-input" });
+    const consoleInput = el("input", null, {
+      id: "console-input",
+      placeholder: "js",
+    });
     const consoleInputButton = el("button", "Send", {
       id: "console-input-button",
     });
