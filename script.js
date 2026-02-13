@@ -180,7 +180,7 @@ ${dialogSelector} {
 
     const consoleInput = el("input", null, {
       id: "console-input",
-      placeholder: "js",
+      placeholder: "js, e.g.: $('body')",
     });
     const consoleInputButton = el("button", "Send", {
       id: "console-input-button",
