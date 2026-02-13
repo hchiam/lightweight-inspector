@@ -10,9 +10,24 @@
 
 ```js
 javascript:(()=>{
-    const script = document.createElement('script');
-    script.src='https://raw.githubusercontent.com/hchiam/lightweight-inspector/refs/heads/main/script.js';
-    document.body.append(script);
+    const src = 'https://raw.githubusercontent.com/hchiam/lightweight-inspector/refs/heads/main/script.js';
+    try {
+        if (!document.addedLightweightInspectorSecuritypolicyviolationEventListener) {
+            document.addedLightweightInspectorSecuritypolicyviolationEventListener = true;
+            document.addEventListener('securitypolicyviolation', (e) => {
+                alert(`CSP blocking lightweight-inspector`);
+            });
+        }
+        fetch(src).then(x=>x.text()).then(x=>{eval(x);});
+    } catch(e) {
+        try {
+            const script = document.createElement('script');
+            script.src = src;
+            document.body.append(script);
+        } catch(e) {
+            alert(`couldn't start lightweight-inspector`);
+        }
+    }
 })();
 ```
 
