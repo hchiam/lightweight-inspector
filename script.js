@@ -119,6 +119,14 @@ ${dialogSelector} {
         }
         ${jsInspectorSelector} {
             outline: 1px solid yellow;
+            input,
+            button {
+                position: sticky;
+                top: 0;
+                z-index: 1;
+                min-height: 44px;
+                min-width: 44px;
+            }
             p {
                 margin: 0;
                 opacity: 0.8;
