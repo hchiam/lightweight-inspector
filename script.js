@@ -363,6 +363,13 @@ ${dialogSelector} {
     });
 
     captureConsole({
+      clearCallback: function () {
+        [...jsInspector.children]
+          .filter(
+            (child) => child !== consoleInput && child !== consoleInputButton,
+          )
+          .forEach((child) => child.remove());
+      },
       logCallback: function () {
         jsInspector.append(createConsoleMessage("white", arguments));
       },
@@ -401,6 +408,7 @@ ${dialogSelector} {
   }
 
   function captureConsole({
+    clearCallback,
     logCallback,
     errorCallback,
     debugCallback,
@@ -409,6 +417,12 @@ ${dialogSelector} {
     traceCallback,
     warnCallback,
   }) {
+    const existingConsoleclear = console.clear;
+    console.clear = function () {
+      clearCallback(...arguments);
+      existingConsoleclear(...arguments);
+    };
+
     const existingConsolelog = console.log;
     console.log = function () {
       logCallback(...arguments);
