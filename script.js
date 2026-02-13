@@ -76,12 +76,14 @@ ${dialogSelector} {
             background: #f00e;
             color: white;
             border: none;
-            border-radius: 0.5rem;
+            border-radius: 50%;
             padding: 0.25rem;
             cursor: pointer;
             width: 1rem;
             height: 1rem;
-            font-size: 0.5rem;
+            min-width: 44px;
+            min-height: 44px;
+            font-size: 1rem;
             font-weight: bold;
             display: flex;
             justify-content: center;
