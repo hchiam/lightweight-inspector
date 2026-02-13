@@ -180,7 +180,7 @@ ${dialogSelector} {
 
     const consoleInput = el("input", null, {
       id: "console-input",
-      placeholder: "js, e.g.: $('body')",
+      placeholder: "js, e.g.: $('body') or $$('p')",
     });
     const consoleInputButton = el("button", "Send", {
       id: "console-input-button",
@@ -305,6 +305,12 @@ ${dialogSelector} {
       return `<${arg.tagName.toLowerCase()}${Object.values(arg.attributes)
         .map((attr) => " " + attr.name + '="' + attr.value + '"')
         .join("")}>`;
+    } else if (Array.isArray(arg)) {
+      return (
+        "[\n" +
+        arg.map((a) => handleHtmlElementInConsole(a)).map((a) => " " + a) +
+        "\n]"
+      );
     } else {
       return arg;
     }
