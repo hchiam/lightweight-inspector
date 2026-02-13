@@ -330,6 +330,10 @@ ${dialogSelector} {
       id: cssInspectorSelector.replace("#", ""),
     });
     inspectorContents.append(cssInspector);
+
+    // TODO
+    // checkboxes and 2 inputs for properties and values
+    // always one extra checkbox and extra 2 empty inputs if all have prop+val filled
   }
 
   function inspectJS() {
