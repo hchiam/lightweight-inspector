@@ -134,20 +134,25 @@ ${dialogSelector} {
                 width: max-content;
                 margin-block-start: 0.5rem;
                 background: #80000080;
-            }
-            span {
-                color: red;
-            }
-            span[contenteditable="true"],
-            span[contenteditable=""] {
-                background: black;
-                color: orange;
-                border: 1px solid orange;
-                margin-inline-start: 1ch;
-                padding-inline: 0.25rem;
-                min-height: 1.5rem;
-                display: flex;
-                align-items: center;
+                .tag-name {
+                    min-height: 44px;
+                    min-width: 44px;
+                }
+                span {
+                    color: red;
+                }
+                span[contenteditable="true"],
+                span[contenteditable=""] {
+                    background: black;
+                    color: orange;
+                    border: 1px solid orange;
+                    margin-inline-start: 1ch;
+                    padding-inline: 0.25rem;
+                    min-height: 1.5rem;
+                    min-width: 44px;
+                    display: flex;
+                    align-items: center;
+                }
             }
         }
         ${cssInspectorSelector} {
@@ -258,18 +263,39 @@ ${dialogSelector} {
   function processAttributes(startTagText) {
     const attributeRegex = / ([^=]+?="[^">]*?")/;
     const matches = startTagText.split(attributeRegex).slice(1); // so search even instead of odd
-    if (!matches.length) return [el("span", ">")];
-    return matches.map((text, i) => {
-      const isAttribute = i % 2 === 0; // even index = split delimiters
-      if (isAttribute) {
-        return el("span", text, {
-          class: "attribute-input",
-          contenteditable: true,
-        });
+    if (!matches.length) {
+      if (startTagText === "<!DOCTYPE html>") {
+        return [];
       } else {
-        return el("span", text + " ");
+        return [emptyAttribute(), el("span", ">")];
       }
-    });
+    } else {
+      return [
+        emptyAttribute(),
+        ...matches.map((text, i) => {
+          const isAttribute = i % 2 === 0; // even index = split delimiters
+          if (isAttribute) {
+            return el("span", text, {
+              class: "attribute-input",
+              contenteditable: true,
+            });
+          } else {
+            return el("span", text + " ");
+          }
+        }),
+      ];
+    }
+  }
+
+  function emptyAttribute() {
+    return el(
+      "span",
+      "", // intentionally empty input to enable adding attribute(s)
+      {
+        class: "attribute-input",
+        contenteditable: true,
+      },
+    );
   }
 
   function inspectCSS() {
