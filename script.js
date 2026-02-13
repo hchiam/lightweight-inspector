@@ -262,10 +262,15 @@ ${dialogSelector} {
     } else {
       const tagNameRegex = /<([^ >]+) ?/;
       const tagName = tagNameRegex.exec(startTagText)?.[1];
-      return el("button", tagName, {
+      const tagNameButton = el("button", tagName, {
         class: "tag-name",
         title: "show styles for: " + tagName,
       });
+      tagNameButton.addEventListener("click", () => {
+        // TODO
+        console.log("click", tagNameButton);
+      });
+      return tagNameButton;
     }
   }
 
@@ -284,10 +289,12 @@ ${dialogSelector} {
         ...matches.map((text, i) => {
           const isAttribute = i % 2 === 0; // even index = split delimiters
           if (isAttribute) {
-            return el("span", text, {
+            const attributeInput = el("span", text, {
               class: "attribute-input",
               contenteditable: true,
             });
+            initializeAttributeInputEventListener(attributeInput);
+            return attributeInput;
           } else {
             return el("span", text + " ");
           }
@@ -297,7 +304,7 @@ ${dialogSelector} {
   }
 
   function emptyAttribute() {
-    return el(
+    const attributeInput = el(
       "span",
       "", // intentionally empty input to enable adding attribute(s)
       {
@@ -305,6 +312,15 @@ ${dialogSelector} {
         contenteditable: true,
       },
     );
+    initializeAttributeInputEventListener(attributeInput);
+    return attributeInput;
+  }
+
+  function initializeAttributeInputEventListener(attributeInput) {
+    attributeInput.addEventListener("blur", () => {
+      // TODO
+      console.log("blur", attributeInput);
+    });
   }
 
   function inspectCSS() {
