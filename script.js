@@ -103,6 +103,9 @@ ${dialogSelector} {
         height: calc(1rem + 1px);
         line-height: 1rem;
     }
+    button {
+        border-radius: 0.5rem;
+    }
     .white { background: white; }
     .red { background: red; }
     .blue { background: lightblue; }
@@ -129,6 +132,7 @@ ${dialogSelector} {
                 inset-block-start: 0;
                 min-height: 44px;
                 min-width: 44px;
+                background: pink;
             }
             .start-tag {
                 display: flex;
@@ -169,6 +173,9 @@ ${dialogSelector} {
                 z-index: 1;
                 min-height: 44px;
                 min-width: 44px;
+            }
+            button {
+                background: yellow;
             }
             p {
                 opacity: 0.8;
