@@ -133,6 +133,7 @@ ${dialogSelector} {
                 min-height: 44px;
                 min-width: 44px;
                 background: pink;
+                z-index: 1;
             }
             .start-tag {
                 display: flex;
