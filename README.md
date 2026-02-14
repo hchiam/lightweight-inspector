@@ -10,7 +10,7 @@
 
 <https://github.com/hchiam/lightweight-inspector/blob/main/script.js>
 
-## bookmarklet to run the [script.js](https://github.com/hchiam/lightweight-inspector/blob/main/script.js)
+## [bookmarklet](https://github.com/hchiam/learning-js/tree/main/bookmarklets#bookmarklets) to run the [script.js](https://github.com/hchiam/lightweight-inspector/blob/main/script.js)
 
 ```js
 javascript:(()=>{
@@ -37,7 +37,7 @@ javascript:(()=>{
 
 ## with [console-log-element](https://github.com/hchiam/console-log-element)
 
-if you're using [console-log-element](https://github.com/hchiam/console-log-element) to run the bookmarklet on Firefox, here's a helpful code snippet to hide it when you don't need it anymore:
+if you're using [console-log-element](https://github.com/hchiam/console-log-element) to run the above [bookmarklet](https://github.com/hchiam/learning-js/tree/main/bookmarklets#bookmarklets) on Firefox, here's a helpful code snippet to hide it when you don't need it anymore:
 
 ```js
 $('#firefox-extension-console-log-element')?.remove();$('#script_firefox-extension-console-log-element')?.remove();
