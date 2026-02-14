@@ -1,5 +1,7 @@
 # lightweight-inspector
 
+Just one of the things I'm working on. <https://github.com/hchiam/learning>
+
 ## 2 goals
 
 1) enable minimally inspecting only a few things in js/css/html in a browser on a mobile device, and
