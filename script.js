@@ -216,27 +216,27 @@ ${dialogSelector} {
     });
     htmlInspector.append(refreshButton);
     refreshButton.addEventListener("click", () => {
-      clearHtmlInspector(htmlInspector, refreshButtonID);
       repopulateHtmlInspector(htmlInspector);
     });
 
-    clearHtmlInspector(htmlInspector, refreshButtonID);
     repopulateHtmlInspector(htmlInspector);
   }
 
-  function clearHtmlInspector(htmlInspector, refreshButtonID) {
-    [...htmlInspector.children]
-      .filter((child) => child.id !== refreshButtonID)
-      .forEach((child) => child.remove());
-  }
-
   function repopulateHtmlInspector(htmlInspector) {
+    clearHtmlInspector(htmlInspector);
+
     const elements = processHtmlStartTags(
       new XMLSerializer().serializeToString(document),
     );
     elements.forEach((element) => {
       htmlInspector.append(element);
     });
+  }
+
+  function clearHtmlInspector(htmlInspector) {
+    [...htmlInspector.children]
+      .filter((child) => child.id !== refreshButtonID)
+      .forEach((child) => child.remove());
   }
 
   function processHtmlStartTags(htmlText) {
