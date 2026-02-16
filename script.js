@@ -269,7 +269,7 @@ ${dialogSelector} {
         ),
       );
     } else if (element.nodeType === Node.ELEMENT_NODE) {
-      const htmlString = new XMLSerializer().serializeToString(element);
+      const htmlString = element.outerHTML;
       const startTag = processHtmlStartTag(htmlString, element, indent);
 
       htmlInspector.append(startTag);
