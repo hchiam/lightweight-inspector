@@ -378,10 +378,38 @@ ${dialogSelector} {
   }
 
   function initializeAttributeInputEventListener(attributeInput) {
+    const previousText = attributeInput.innerText;
     attributeInput.addEventListener("blur", () => {
-      // TODO
-      console.log("blur", attributeInput);
+      const currentText = attributeInput.innerText.trim();
+      if (currentText !== previousText) {
+        const isValidAttribute =
+          currentText === "" || currentText.match(/^[^=]+?="[^"]*?"$/);
+        if (!isValidAttribute) {
+          alert(
+            'attribute needs to be formatted as atttribute="" even if "" is empty',
+          );
+          attributeInput.innerText = previousText;
+        } else {
+          const [, previousAtribute, previousValue] =
+            previousText.match(/^([^=]+?)="([^"]*?)"$/) ?? [];
+          const [, currentAtribute, currentValue] =
+            currentText.match(/^([^=]+?)="([^"]*?)"$/) ?? [];
+          const element = getElementUniquely(attributeInput);
+          if (currentAtribute !== previousAtribute) {
+            element.removeAttribute(previousAtribute);
+          }
+          element.setAttribute(currentAtribute, currentValue);
+          repopulateHtmlInspector($(htmlInspectorSelector));
+        }
+      }
     });
+  }
+
+  function getElementUniquely(attributeInput) {
+    const elementHashTableID =
+      attributeInput.parentElement.getAttribute("data-hash-table-id");
+    const element = htmlElementHashTable[elementHashTableID];
+    return element;
   }
 
   function inspectCSS() {
