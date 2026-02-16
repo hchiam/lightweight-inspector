@@ -14,6 +14,8 @@ javascript: (() => {
   let dialog = null;
   let inspectorContents = null;
 
+  let htmlElementHashTable = {};
+
   runMainLogic();
   function runMainLogic() {
     showDialog();
@@ -162,6 +164,11 @@ ${dialogSelector} {
                     align-items: center;
                 }
             }
+            .end-tag {
+                background: #80000080;
+                clip-path: polygon(10px 0px, 0% 50%, 10px 100%, calc(100% - 10px) 100%, 100% 50%, calc(100% - 10px) 0px);
+                color: red;
+            }
         }
         ${cssInspectorSelector} {
             outline: 1px solid blue;
@@ -227,12 +234,8 @@ ${dialogSelector} {
 
     temporarilyRemoveInspectorFromDOM();
 
-    const elements = processHtmlStartTags(
-      new XMLSerializer().serializeToString(document),
-    );
-    elements.forEach((element) => {
-      htmlInspector.append(element);
-    });
+    htmlElementHashTable = {};
+    populateHtmlInspectorAndTree(htmlInspector);
 
     temporarilyPutInspectorBackInDOM();
   }
@@ -252,23 +255,66 @@ ${dialogSelector} {
     dialog.showModal();
   }
 
-  function processHtmlStartTags(htmlText) {
-    const startTagRegex = /(<(?!\/).+?>)/;
-    const elements = htmlText.split(startTagRegex).map((text, i) => {
-      const isStartTag = i % 2 !== 0; // odd index = split delimiters
-      if (isStartTag) {
-        return el(
-          "p",
-          [el("span", "<"), processTagName(text), ...processAttributes(text)],
-          {
-            class: "start-tag",
-          },
+  function populateHtmlInspectorAndTree(
+    htmlInspector,
+    element = document.documentElement,
+    indent = 0,
+  ) {
+    if (element.nodeType === Node.TEXT_NODE) {
+      htmlInspector.append(
+        el(
+          "pre",
+          "  ".repeat(indent) +
+            element.textContent.split("\n").join("\n" + "  ".repeat(indent)),
+        ),
+      );
+    } else if (element.nodeType === Node.ELEMENT_NODE) {
+      const htmlString = new XMLSerializer().serializeToString(element);
+      const startTag = processHtmlStartTag(htmlString, element, indent);
+
+      htmlInspector.append(startTag);
+
+      [...element.childNodes].forEach((child) => {
+        populateHtmlInspectorAndTree(htmlInspector, child, indent + 1);
+      });
+
+      const endTag = htmlString.trim().match(/(<\/[^>]+?>)\s*?$/)?.[1];
+      if (endTag) {
+        htmlInspector.append(
+          el("pre", "  ".repeat(indent) + endTag, { class: "end-tag" }),
         );
-      } else {
-        return el("p", text);
       }
-    });
-    return elements;
+    }
+  }
+
+  function processHtmlStartTag(htmlText, htmlElement, indent = 0) {
+    const startTagRegex = /(<(?!\/).+?>)/;
+    const text = htmlText.match(startTagRegex)?.[1];
+    const hasStartTag = text;
+    if (hasStartTag) {
+      let hashTableID = -1;
+      if (htmlElement) {
+        hashTableID = Object.keys(htmlElementHashTable).length;
+        htmlElementHashTable[hashTableID] = htmlElement;
+      }
+      return el(
+        "pre",
+        [
+          el("span", "  ".repeat(indent) + "<"),
+          processTagName(text),
+          ...processAttributes(text),
+        ],
+        {
+          class: "start-tag",
+          "data-hash-table-id": hashTableID,
+        },
+      );
+    } else {
+      return el(
+        "pre",
+        "  ".repeat(indent) + text.split("\n").join("\n" + "  ".repeat(indent)),
+      );
+    }
   }
 
   function processTagName(startTagText) {
