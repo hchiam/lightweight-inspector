@@ -262,11 +262,7 @@ ${dialogSelector} {
   ) {
     if (element.nodeType === Node.TEXT_NODE) {
       htmlInspector.append(
-        el(
-          "pre",
-          "  ".repeat(indent) +
-            element.textContent.split("\n").join("\n" + "  ".repeat(indent)),
-        ),
+        el("pre", createIndentedText(element.textContent, indent)),
       );
     } else if (element.nodeType === Node.ELEMENT_NODE) {
       const htmlString = element.outerHTML;
@@ -310,10 +306,8 @@ ${dialogSelector} {
         },
       );
     } else {
-      return el(
-        "pre",
-        "  ".repeat(indent) + text.split("\n").join("\n" + "  ".repeat(indent)),
-      );
+      /* backup: */
+      return el("pre", createIndentedText(text, indent));
     }
   }
 
@@ -412,6 +406,12 @@ ${dialogSelector} {
       attributeInput.parentElement.getAttribute("data-hash-table-id");
     const element = htmlElementHashTable[elementHashTableID];
     return element;
+  }
+
+  function createIndentedText(text, indent) {
+    return (
+      "  ".repeat(indent) + text.split("\n").join("\n" + "  ".repeat(indent))
+    );
   }
 
   function inspectCSS() {
