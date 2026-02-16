@@ -269,27 +269,33 @@ ${dialogSelector} {
   ) {
     if (element.nodeType === Node.TEXT_NODE) {
       if (element.textContent.trim()) {
-        htmlInspector.append(
-          el("details", [
-            el(
-              "summary",
+        if (element.textContent.split("\n").length < 2) {
+          htmlInspector.append(
+            el("pre", createIndentedText(element.textContent, indent)),
+          );
+        } else {
+          htmlInspector.append(
+            el("details", [
               el(
-                "pre",
+                "summary",
                 el(
-                  "i",
+                  "pre",
                   el(
-                    "b",
-                    createIndentedText(
-                      "(click to show/hide textContent:)",
-                      indent,
+                    "i",
+                    el(
+                      "b",
+                      createIndentedText(
+                        "(click to show/hide textContent:)",
+                        indent,
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-            el("pre", createIndentedText(element.textContent, indent)),
-          ]),
-        );
+              el("pre", createIndentedText(element.textContent, indent)),
+            ]),
+          );
+        }
       }
     } else if (element.nodeType === Node.ELEMENT_NODE) {
       const htmlString = element.outerHTML;
