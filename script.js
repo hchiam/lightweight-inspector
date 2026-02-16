@@ -171,6 +171,11 @@ ${dialogSelector} {
                 clip-path: polygon(10px 0px, 0% 50%, 10px 100%, calc(100% - 10px) 100%, 100% 50%, calc(100% - 10px) 0px);
                 color: red;
             }
+            summary pre {
+              display: inline;
+              margin-inline-start: -1rem;
+              cursor: pointer;
+            }
         }
         ${cssInspectorSelector} {
             outline: 1px solid blue;
@@ -263,9 +268,29 @@ ${dialogSelector} {
     indent = 0,
   ) {
     if (element.nodeType === Node.TEXT_NODE) {
-      htmlInspector.append(
-        el("pre", createIndentedText(element.textContent, indent)),
-      );
+      if (element.textContent.trim()) {
+        htmlInspector.append(
+          el("details", [
+            el(
+              "summary",
+              el(
+                "pre",
+                el(
+                  "i",
+                  el(
+                    "b",
+                    createIndentedText(
+                      "(click to show/hide textContent:)",
+                      indent,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            el("pre", createIndentedText(element.textContent, indent)),
+          ]),
+        );
+      }
     } else if (element.nodeType === Node.ELEMENT_NODE) {
       const htmlString = element.outerHTML;
       const startTag = processHtmlStartTag(htmlString, element, indent);
