@@ -121,7 +121,8 @@ ${dialogSelector} {
             flex: 1;
             margin-block: 1.5px;
             overflow: auto;
-            p {
+            p,
+            pre {
                 margin: 0;
             }
         }
