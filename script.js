@@ -110,7 +110,7 @@ ${dialogSelector} {
         border-radius: 0.5rem;
     }
     .white { background: white; }
-    .red { background: red; }
+    .red { background: pink; }
     .blue { background: lightblue; }
     .yellow { background: yellow; }
     ${inspectorContentsSelector} {
