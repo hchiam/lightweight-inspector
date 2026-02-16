@@ -328,7 +328,7 @@ ${dialogSelector} {
         title: "show styles for: " + tagName,
       });
       tagNameButton.addEventListener("click", () => {
-        // TODO
+        /* TODO */
         console.log("click", tagNameButton);
       });
       return tagNameButton;
@@ -337,7 +337,9 @@ ${dialogSelector} {
 
   function processAttributes(startTagText) {
     const attributeRegex = / ([^=]+?="[^">]*?")/;
-    const matches = startTagText.split(attributeRegex).slice(1); // so search even instead of odd
+    const matches = startTagText
+      .split(attributeRegex)
+      .slice(1); /* so search even instead of odd */
     if (!matches.length) {
       if (startTagText === "<!DOCTYPE html>") {
         return [];
@@ -348,7 +350,7 @@ ${dialogSelector} {
       return [
         emptyAttribute(),
         ...matches.map((text, i) => {
-          const isAttribute = i % 2 === 0; // even index = split delimiters
+          const isAttribute = i % 2 === 0; /* even index = split delimiters */
           if (isAttribute) {
             const attributeInput = el("span", text, {
               class: "attribute-input",
@@ -367,7 +369,7 @@ ${dialogSelector} {
   function emptyAttribute() {
     const attributeInput = el(
       "span",
-      "", // intentionally empty input to enable adding attribute(s)
+      "" /* intentionally empty input to enable adding attribute(s) */,
       {
         class: "attribute-input",
         contenteditable: true,
@@ -420,9 +422,9 @@ ${dialogSelector} {
     });
     inspectorContents.append(cssInspector);
 
-    // TODO
-    // checkboxes and 2 inputs for properties and values
-    // always one extra checkbox and extra 2 empty inputs if all have prop+val filled
+    /* TODO */
+    /* checkboxes and 2 inputs for properties and values */
+    /* always one extra checkbox and extra 2 empty inputs if all have prop+val filled */
   }
 
   function inspectJS() {
