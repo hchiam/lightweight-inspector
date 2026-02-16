@@ -14,6 +14,7 @@ javascript: (() => {
   let dialog = null;
   let inspectorContents = null;
 
+  const indenter = "  ";
   let htmlElementHashTable = {};
 
   runMainLogic();
@@ -277,7 +278,7 @@ ${dialogSelector} {
       const endTag = htmlString.trim().match(/(<\/[^>]+?>)\s*?$/)?.[1];
       if (endTag) {
         htmlInspector.append(
-          el("pre", "  ".repeat(indent) + endTag, { class: "end-tag" }),
+          el("pre", indenter.repeat(indent) + endTag, { class: "end-tag" }),
         );
       }
     }
@@ -296,7 +297,7 @@ ${dialogSelector} {
       return el(
         "pre",
         [
-          el("span", "  ".repeat(indent) + "<"),
+          el("span", indenter.repeat(indent) + "<"),
           processTagName(text),
           ...processAttributes(text),
         ],
@@ -410,7 +411,8 @@ ${dialogSelector} {
 
   function createIndentedText(text, indent) {
     return (
-      "  ".repeat(indent) + text.split("\n").join("\n" + "  ".repeat(indent))
+      indenter.repeat(indent) +
+      text.split("\n").join("\n" + indenter.repeat(indent))
     );
   }
 
