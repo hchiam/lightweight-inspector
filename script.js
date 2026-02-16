@@ -170,6 +170,7 @@ ${dialogSelector} {
                 background: #80000080;
                 clip-path: polygon(10px 0px, 0% 50%, 10px 100%, calc(100% - 10px) 100%, 100% 50%, calc(100% - 10px) 0px);
                 color: red;
+                width: max-content;
             }
             summary pre {
               display: inline;
