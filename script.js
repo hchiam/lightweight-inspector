@@ -269,7 +269,7 @@ ${dialogSelector} {
   ) {
     if (element.nodeType === Node.TEXT_NODE) {
       if (element.textContent.trim()) {
-        if (element.textContent.split("\n").length < 2) {
+        if (element.textContent.split("\n").filter(Boolean).length < 2) {
           htmlInspector.append(
             el("pre", createIndentedText(element.textContent, indent)),
           );
