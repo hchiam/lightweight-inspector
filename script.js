@@ -225,18 +225,31 @@ ${dialogSelector} {
   function repopulateHtmlInspector(htmlInspector) {
     clearHtmlInspector(htmlInspector);
 
+    temporarilyRemoveInspectorFromDOM();
+
     const elements = processHtmlStartTags(
       new XMLSerializer().serializeToString(document),
     );
     elements.forEach((element) => {
       htmlInspector.append(element);
     });
+
+    temporarilyPutInspectorBackInDOM();
   }
 
   function clearHtmlInspector(htmlInspector) {
     [...htmlInspector.children]
       .filter((child) => child.id !== refreshButtonID)
       .forEach((child) => child.remove());
+  }
+
+  function temporarilyRemoveInspectorFromDOM() {
+    dialog.close();
+    document.body.removeChild(dialog);
+  }
+  function temporarilyPutInspectorBackInDOM() {
+    document.body.append(dialog);
+    dialog.showModal();
   }
 
   function processHtmlStartTags(htmlText) {
