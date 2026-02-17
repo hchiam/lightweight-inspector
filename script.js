@@ -107,6 +107,7 @@ ${dialogSelector} {
         height: calc(1rem + 1px);
         line-height: 1rem;
     }
+    input,
     button {
         border-radius: 0.5rem;
     }
@@ -118,11 +119,13 @@ ${dialogSelector} {
         height: 100%;
         display: flex;
         flex-direction: column;
+        gap: 1rem;
         > * {
             flex: 1;
             margin-block: 1.5px;
             overflow: auto;
             border-radius: 0.5rem;
+            background: #00000080;
             p,
             pre {
                 margin: 0;
@@ -130,7 +133,6 @@ ${dialogSelector} {
         }
         ${htmlInspectorSelector} {
             outline: 1px solid orange;
-            background: #00000080;
             color: white;
             #${refreshButtonID} {
                 position: sticky;
@@ -175,7 +177,7 @@ ${dialogSelector} {
                 width: max-content;
             }
             summary {
-                color: pink;
+                color: orange;
                 pre {
                   display: inline;
                   margin-inline-start: -1rem;
