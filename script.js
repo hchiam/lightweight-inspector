@@ -67,7 +67,7 @@ ${dialogSelector} *::after {
     all: revert;
 }
 ${dialogSelector} {
-    background: #ffffff80;
+    background: #00000080;
     width: 100%;
     height: 100%;
     border-color: #0f0e;
@@ -75,8 +75,9 @@ ${dialogSelector} {
         position: fixed;
         top: 0.25rem;
         right: 0.25rem;
+        z-index: 1;
         button {
-            background: #f00e;
+            background: #da0e0eee;
             color: white;
             border: none;
             border-radius: 50%;
@@ -99,7 +100,7 @@ ${dialogSelector} {
         left: 0;
         padding: 0;
         margin: 0;
-        padding-inline-start: 0.25rem;
+        padding-inline: 0.5rem;
         padding-block-start: 0.25rem;
         background: #0f0e;
         color: black;
@@ -121,13 +122,14 @@ ${dialogSelector} {
             flex: 1;
             margin-block: 1.5px;
             overflow: auto;
+            border-radius: 0.5rem;
             p,
             pre {
                 margin: 0;
             }
         }
         ${htmlInspectorSelector} {
-            outline: 1px solid red;
+            outline: 1px solid orange;
             background: #00000080;
             color: white;
             #${refreshButtonID} {
@@ -136,7 +138,7 @@ ${dialogSelector} {
                 inset-block-start: 0;
                 min-height: 44px;
                 min-width: 44px;
-                background: pink;
+                background: #ff9c5eee;
                 z-index: 1;
             }
             .start-tag {
@@ -144,14 +146,14 @@ ${dialogSelector} {
                 align-items: center;
                 width: max-content;
                 margin-block-start: 0.5rem;
-                background: #80000080;
+                background: #ffa50080;
                 clip-path: polygon(10px 0px, 0% 50%, 10px 100%, calc(100% - 10px) 100%, 100% 50%, calc(100% - 10px) 0px);
                 .tag-name {
                     min-height: 44px;
                     min-width: 44px;
                 }
                 span {
-                    color: red;
+                    color: white;
                 }
                 span[contenteditable="true"],
                 span[contenteditable=""] {
@@ -167,19 +169,22 @@ ${dialogSelector} {
                 }
             }
             .end-tag {
-                background: #80000080;
+                background: #ffa50080;
                 clip-path: polygon(10px 0px, 0% 50%, 10px 100%, calc(100% - 10px) 100%, 100% 50%, calc(100% - 10px) 0px);
-                color: red;
+                color: white;
                 width: max-content;
             }
-            summary pre {
-              display: inline;
-              margin-inline-start: -1rem;
-              cursor: pointer;
+            summary {
+                color: pink;
+                pre {
+                  display: inline;
+                  margin-inline-start: -1rem;
+                  cursor: pointer;
+                }
             }
         }
         ${cssInspectorSelector} {
-            outline: 1px solid blue;
+            outline: 1px solid #7cb5e0;
         }
         ${jsInspectorSelector} {
             outline: 1px solid yellow;
@@ -192,7 +197,7 @@ ${dialogSelector} {
                 min-width: 44px;
             }
             button {
-                background: yellow;
+                background: #f7ff00ee;
             }
             p {
                 opacity: 0.8;
