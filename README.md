@@ -16,7 +16,7 @@ Just one of the things I'm working on. <https://github.com/hchiam/learning>
 
 ```js
 javascript:(()=>{
-    const src = 'https://raw.githubusercontent.com/hchiam/lightweight-inspector/refs/heads/main/script.js';
+    const src = 'https:%2F%2Fraw.githubusercontent.com%2Fhchiam%2Flightweight-inspector%2Frefs%2Fheads%2Fmain%2Fscript.js';
     try {
         if (!document.addedLightweightInspectorSecuritypolicyviolationEventListener) {
             document.addedLightweightInspectorSecuritypolicyviolationEventListener = true;
