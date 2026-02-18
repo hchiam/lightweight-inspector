@@ -482,7 +482,7 @@ ${dialogSelector} {
     if ($(cssInspectorSelector)) return;
 
     customCssTextarea = el("textarea", "", {
-      id: customCssTextareaSelector,
+      id: customCssTextareaSelector.replace("#", ""),
       [dataHashTableID]: -1 /* intentionally invalid */,
     });
 
@@ -503,8 +503,22 @@ ${dialogSelector} {
     );
     inspectorContents.append(cssInspector);
 
-    customCssTextarea.addEventListener("keyup", () => {
-      /* TODO: update style="..." */
+    customCssTextarea.addEventListener("blur", () => {
+      const style = customCssTextarea.value
+        .trim()
+        .replace(/^style=["']?/, "")
+        .replace(/["']$/, "")
+        .split(";")
+        .map((d) => d.trim())
+        .join("");
+
+      const hashTableID = customCssTextarea.getAttribute(dataHashTableID);
+      const attributeInput = $(
+        `.start-tag[${dataHashTableID}="${hashTableID}"]`,
+      ).querySelector(".attribute-input");
+
+      attributeInput.innerText = `style="${style}"`;
+      /* TODO: this doesn't work: attributeInput.blur(); */
     });
 
     /* TODO */
@@ -520,17 +534,16 @@ ${dialogSelector} {
 
   function showCSSRules(element) {
     const cssRulesString = getCssRulesString(element);
-    let styleAttributeString = getStyleAttributeString(element);
+    const styleAttributeString = getStyleAttributeString(element);
 
-    if (styleAttributeString) {
-      styleAttributeString = `/* element */ {
-  ${styleAttributeString}
-}
-`;
-    }
+    $(customCssTextareaSelector).value = styleAttributeString
+      .trim()
+      .split(";")
+      .map((d) => d.trim())
+      .join(";\n")
+      .trim();
 
-    $(inspectedCssPreSelector).innerText =
-      `${styleAttributeString}${cssRulesString}`;
+    $(inspectedCssPreSelector).innerText = cssRulesString;
   }
 
   function getStyleAttributeString(element) {
