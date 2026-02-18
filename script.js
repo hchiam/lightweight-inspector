@@ -221,6 +221,17 @@ ${dialogSelector} {
               background: white;
               color: black;
               font-family: monospace;
+              transition: padding 0.2s;
+              &:focus {
+                padding-block-start: 1rem;
+                &::before {
+                  margin-block-start: -1rem;
+                  content: "changes to this will take effect right away: ";
+                  position: absolute;
+                  background: #00fb;
+                  color: white;
+                }
+              }
             }
             &:has(${customCssTextareaForElementSelector}[data-hash-table-id="-1"]) ${cssTagNameSelector},
             ${customCssTextareaForElementSelector}[data-hash-table-id="-1"] {
