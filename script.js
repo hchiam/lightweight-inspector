@@ -187,6 +187,7 @@ ${dialogSelector} {
         }
         ${cssInspectorSelector} {
             outline: 1px solid #7cb5e0;
+            color: #7cb5e0;
         }
         ${jsInspectorSelector} {
             outline: 1px solid yellow;
@@ -369,8 +370,7 @@ ${dialogSelector} {
         title: "show styles for: " + tagName,
       });
       tagNameButton.addEventListener("click", () => {
-        /* TODO */
-        console.log("click", tagNameButton);
+        showCSSRules(getElementUniquely(tagNameButton));
       });
       return tagNameButton;
     }
@@ -448,9 +448,11 @@ ${dialogSelector} {
     });
   }
 
-  function getElementUniquely(attributeInput) {
+  function getElementUniquely(attributeInputOrTagNameButton) {
     const elementHashTableID =
-      attributeInput.parentElement.getAttribute("data-hash-table-id");
+      attributeInputOrTagNameButton.parentElement.getAttribute(
+        "data-hash-table-id",
+      );
     const element = htmlElementHashTable[elementHashTableID];
     return element;
   }
@@ -462,10 +464,45 @@ ${dialogSelector} {
     );
   }
 
+  function showCSSRules(element) {
+    const cssRulesString = getCssRulesString(element);
+
+    const cssInspector = $(cssInspectorSelector);
+    cssInspector.innerText = cssRulesString;
+  }
+
+  function getCssRulesString(element) {
+    return getCssRulesArray(element)
+      .map((rule) => {
+        const [selector, declarations] = rule.split(/\s*[{}]\s*/);
+        return `${selector} {
+${declarations
+  .split(/;\s*/)
+  .filter(Boolean)
+  .map((d) => "  " + d + ";\n")
+  .join("")}}`;
+      })
+      .join("\n");
+  }
+
+  function getCssRulesArray(element) {
+    return getCssRulesObjects(element).map((rule) => rule.cssText);
+  }
+
+  function getCssRulesObjects(element) {
+    return [...document.styleSheets]
+      .map((sheet) =>
+        [...sheet.cssRules].filter((rule) =>
+          element.matches(rule.selectorText),
+        ),
+      )
+      .flat();
+  }
+
   function inspectCSS() {
     if ($(cssInspectorSelector)) return;
 
-    const cssInspector = el("div", null, {
+    const cssInspector = el("pre", null, {
       id: cssInspectorSelector.replace("#", ""),
     });
     inspectorContents.append(cssInspector);
