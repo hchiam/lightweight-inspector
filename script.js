@@ -465,14 +465,18 @@ ${dialogSelector} {
   }
 
   function showCSSRules(element) {
-    const styleAttributeString = getStyleAttributeString(element);
     const cssRulesString = getCssRulesString(element);
+    let styleAttributeString = getStyleAttributeString(element);
 
-    const cssInspector = $(cssInspectorSelector);
-    cssInspector.innerText = `/* element */ {
+    if (styleAttributeString) {
+      styleAttributeString = `/* element */ {
     ${styleAttributeString}
 }
-${cssRulesString}`;
+`;
+    }
+
+    const cssInspector = $(cssInspectorSelector);
+    cssInspector.innerText = `${styleAttributeString}${cssRulesString}`;
   }
 
   function getStyleAttributeString(element) {
