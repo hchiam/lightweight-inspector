@@ -197,6 +197,9 @@ ${dialogSelector} {
             outline: 1px solid #7cb5e0;
             color: #7cb5e0;
             padding: 0.25rem;
+            ${customCssTextareaSelector}[data-hash-table-id="-1"] {
+                display: none;
+            }
         }
         ${jsInspectorSelector} {
             outline: 1px solid yellow;
@@ -459,6 +462,7 @@ ${dialogSelector} {
             element.setAttribute(currentAtribute, currentValue);
           }
           repopulateHtmlInspector($(htmlInspectorSelector));
+          customCssTextarea.setAttribute(dataHashTableID, -1);
         }
       }
     });
@@ -508,9 +512,10 @@ ${dialogSelector} {
         .trim()
         .replace(/^style=["']?/, "")
         .replace(/["']$/, "")
-        .split(";")
+        .split(/[;\n]/)
         .map((d) => d.trim())
-        .join("");
+        .join(";")
+        .replace(/;;+/g, ";");
 
       const hashTableID = customCssTextarea.getAttribute(dataHashTableID);
       const attributeInput = $(
