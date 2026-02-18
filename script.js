@@ -476,7 +476,7 @@ ${cssRulesString}`;
   }
 
   function getStyleAttributeString(element) {
-    return element.getAttribute("style");
+    return element.getAttribute("style") ?? "";
   }
 
   function getCssRulesString(element) {
