@@ -462,8 +462,10 @@ ${dialogSelector} {
           if (currentText) {
             element.setAttribute(currentAtribute, currentValue);
           }
-          repopulateHtmlInspector($(htmlInspectorSelector));
-          customCssTextarea.setAttribute(dataHashTableID, -1);
+          if (currentAtribute !== "style") {
+            repopulateHtmlInspector($(htmlInspectorSelector));
+            customCssTextarea.setAttribute(dataHashTableID, -1);
+          }
         }
       }
     });
@@ -563,7 +565,7 @@ ${dialogSelector} {
     const cssRulesString = getCssRulesString(element);
     const styleAttributeString = getStyleAttributeString(element);
 
-    $(customCssTextareaSelector).value = styleAttributeString
+    customCssTextarea.value = styleAttributeString
       .trim()
       .split(";")
       .map((d) => d.trim())
