@@ -472,7 +472,7 @@ ${dialogSelector} {
 
     if (styleAttributeString) {
       styleAttributeString = `/* element */ {
-    ${styleAttributeString}
+  ${styleAttributeString}
 }
 `;
     }
