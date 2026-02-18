@@ -441,7 +441,9 @@ ${dialogSelector} {
           if (currentAtribute !== previousAtribute) {
             element.removeAttribute(previousAtribute);
           }
-          element.setAttribute(currentAtribute, currentValue);
+          if (currentText) {
+            element.setAttribute(currentAtribute, currentValue);
+          }
           repopulateHtmlInspector($(htmlInspectorSelector));
         }
       }
