@@ -603,7 +603,7 @@ ${declarations
   }
 
   function scrollToEndOfConsoleLog() {
-    $(jsInspectorSelector).scrollTo(0, $(jsInspectorSelector).scrollHeight);
+    $(jsInspectorSelector)?.scrollTo(0, $(jsInspectorSelector).scrollHeight);
   }
 
   function captureConsole({
