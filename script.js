@@ -440,6 +440,9 @@ ${dialogSelector} {
 
   function initializeAttributeInputEventListener(attributeInput) {
     const previousText = attributeInput.innerText;
+    attributeInput.addEventListener("focus", () => {
+      clearCssInspector();
+    });
     attributeInput.addEventListener("blur", () => {
       const currentText = attributeInput.innerText.trim();
       if (currentText !== previousText) {
@@ -464,7 +467,7 @@ ${dialogSelector} {
           }
           if (currentAtribute !== "style") {
             repopulateHtmlInspector($(htmlInspectorSelector));
-            customCssTextarea.setAttribute(dataHashTableID, -1);
+            clearCssInspector();
           }
         }
       }
@@ -608,7 +611,8 @@ ${declarations
   }
 
   function clearCssInspector() {
-    if ($(inspectedCssPreSelector)) $(inspectedCssPreSelector).innerText = "";
+    if (customCssTextarea) customCssTextarea.setAttribute(dataHashTableID, -1);
+    if (inspectedCssPre) inspectedCssPre.innerText = "";
   }
 
   function inspectJS() {
