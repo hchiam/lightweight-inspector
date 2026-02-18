@@ -10,6 +10,7 @@ javascript: (() => {
   const jsInspectorSelector = "#js-inspector";
   const cssTagNameSelector = "#css-tag-name";
   const customCssTextareaForElementSelector = "#custom-css-for-element";
+  const customCssTextareaGlobalSelector = "#custom-css-global";
   const inspectedCssPreSelector = "#inspected-css";
 
   const refreshButtonID = "refresh-html-button";
@@ -23,6 +24,7 @@ javascript: (() => {
   let htmlElementHashTable = {};
 
   let customCssTextareaForElement = null;
+  let customCssTextareaGlobal = null;
   let inspectedCssPre = null;
 
   runMainLogic();
@@ -197,6 +199,24 @@ ${dialogSelector} {
             outline: 1px solid #7cb5e0;
             color: #7cb5e0;
             padding: 0.25rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-areas:
+              "t a"
+              "e a"
+              "i a";
+            ${cssTagNameSelector} {
+              grid-area: t;
+            }
+            ${customCssTextareaForElementSelector} {
+              grid-area: e;
+            }
+            ${inspectedCssPreSelector} {
+              grid-area: i;
+            }
+            ${customCssTextareaGlobalSelector} {
+              grid-area: a;
+            }
             &:has(${customCssTextareaForElementSelector}[data-hash-table-id="-1"]) ${cssTagNameSelector},
             ${customCssTextareaForElementSelector}[data-hash-table-id="-1"] {
                 display: none;
@@ -491,7 +511,7 @@ ${dialogSelector} {
   function inspectCSS() {
     if ($(cssInspectorSelector)) return;
 
-    customCssTextareaForElement = el("textarea", "", {
+    customCssTextareaForElement = el("textarea", null, {
       id: customCssTextareaForElementSelector.replace("#", ""),
       [dataHashTableID]: -1 /* intentionally invalid */,
       placeholder: "custom css for this element only",
@@ -501,12 +521,21 @@ ${dialogSelector} {
       id: inspectedCssPreSelector.replace("#", ""),
     });
 
+    customCssTextareaGlobal = el("textarea", null, {
+      id: customCssTextareaGlobalSelector.replace("#", ""),
+      placeholder: "custom css for all elements - use selectors",
+    });
+    customCssTextareaGlobal.value = `* {
+  
+}`;
+
     const cssInspector = el(
       "div",
       [
         el("p", "", { id: cssTagNameSelector.replace("#", "") }),
         customCssTextareaForElement,
         inspectedCssPre,
+        customCssTextareaGlobal,
       ],
       {
         id: cssInspectorSelector.replace("#", ""),
