@@ -260,6 +260,8 @@ ${dialogSelector} {
 
     htmlInspector.scrollTop = scrollTop;
     htmlInspector.scrollLeft = scrollLeft;
+
+    clearCssInspector();
   }
 
   function clearHtmlInspector(htmlInspector) {
@@ -466,6 +468,19 @@ ${dialogSelector} {
     );
   }
 
+  function inspectCSS() {
+    if ($(cssInspectorSelector)) return;
+
+    const cssInspector = el("pre", null, {
+      id: cssInspectorSelector.replace("#", ""),
+    });
+    inspectorContents.append(cssInspector);
+
+    /* TODO */
+    /* checkboxes and 2 inputs for properties and values */
+    /* always one extra checkbox and extra 2 empty inputs if all have prop+val filled */
+  }
+
   function showCSSRules(element) {
     const cssRulesString = getCssRulesString(element);
     let styleAttributeString = getStyleAttributeString(element);
@@ -477,8 +492,8 @@ ${dialogSelector} {
 `;
     }
 
-    const cssInspector = $(cssInspectorSelector);
-    cssInspector.innerText = `${styleAttributeString}${cssRulesString}`;
+    $(cssInspectorSelector).innerText =
+      `${styleAttributeString}${cssRulesString}`;
   }
 
   function getStyleAttributeString(element) {
@@ -513,17 +528,8 @@ ${declarations
       .flat();
   }
 
-  function inspectCSS() {
-    if ($(cssInspectorSelector)) return;
-
-    const cssInspector = el("pre", null, {
-      id: cssInspectorSelector.replace("#", ""),
-    });
-    inspectorContents.append(cssInspector);
-
-    /* TODO */
-    /* checkboxes and 2 inputs for properties and values */
-    /* always one extra checkbox and extra 2 empty inputs if all have prop+val filled */
+  function clearCssInspector() {
+    if ($(cssInspectorSelector)) $(cssInspectorSelector).innerText = "";
   }
 
   function inspectJS() {
