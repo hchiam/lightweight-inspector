@@ -494,6 +494,7 @@ ${dialogSelector} {
     customCssTextarea = el("textarea", "", {
       id: customCssTextareaSelector.replace("#", ""),
       [dataHashTableID]: -1 /* intentionally invalid */,
+      placeholder: "custom css for this element only",
     });
 
     inspectedCssPre = el("pre", "", {
