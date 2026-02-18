@@ -197,6 +197,7 @@ ${dialogSelector} {
             outline: 1px solid #7cb5e0;
             color: #7cb5e0;
             padding: 0.25rem;
+            &:has(${customCssTextareaSelector}[data-hash-table-id="-1"]) ${cssTagNameSelector},
             ${customCssTextareaSelector}[data-hash-table-id="-1"] {
                 display: none;
             }
@@ -523,7 +524,7 @@ ${dialogSelector} {
       ).querySelector(".attribute-input");
 
       attributeInput.innerText = `style="${style}"`;
-      /* TODO: this doesn't work: attributeInput.blur(); */
+      triggerEvent(attributeInput, "blur");
     });
 
     /* TODO */
@@ -531,9 +532,30 @@ ${dialogSelector} {
     /* always one extra checkbox and extra 2 empty inputs if all have prop+val filled */
   }
 
-  function updateCustomCssTextareaHashTableID(tagNameButton) {
+  function triggerEvent(element, eventName = "", data) {
+    if (!element || !eventName) return;
+    var event;
+    if (document.createEvent) {
+      event = document.createEvent("HTMLEvents");
+      event.initEvent(eventName, true, true);
+      event.eventName = eventName;
+      if (eventName.includes("key")) {
+        console.log(element, eventName, data);
+        element.dispatchEvent(new KeyboardEvent("keypress", data));
+      } else {
+        element.dispatchEvent(event);
+      }
+    } else {
+      event = document.createEventObject();
+      event.eventName = eventName;
+      event.eventType = eventName;
+      element.fireEvent("on" + event.eventType, event);
+    }
+  }
+
+  function updateCustomCssTextareaHashTableID(attributeInputOrTagNameButton) {
     const hashTableID =
-      tagNameButton.parentElement.getAttribute(dataHashTableID);
+      attributeInputOrTagNameButton.parentElement.getAttribute(dataHashTableID);
     customCssTextarea.setAttribute(dataHashTableID, hashTableID);
   }
 
