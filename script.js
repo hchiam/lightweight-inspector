@@ -8,14 +8,22 @@ javascript: (() => {
   const htmlInspectorSelector = "#html-inspector";
   const cssInspectorSelector = "#css-inspector";
   const jsInspectorSelector = "#js-inspector";
+  const cssTagNameSelector = "#css-tag-name";
+  const customCssTextareaSelector = "#custom-css";
+  const inspectedCssPreSelector = "#inspected-css";
 
   const refreshButtonID = "refresh-html-button";
+
+  const dataHashTableID = "data-hash-table-id";
 
   let dialog = null;
   let inspectorContents = null;
 
   const indenter = "  ";
   let htmlElementHashTable = {};
+
+  let customCssTextarea = null;
+  let inspectedCssPre = null;
 
   runMainLogic();
   function runMainLogic() {
@@ -188,6 +196,7 @@ ${dialogSelector} {
         ${cssInspectorSelector} {
             outline: 1px solid #7cb5e0;
             color: #7cb5e0;
+            padding: 0.25rem;
         }
         ${jsInspectorSelector} {
             outline: 1px solid yellow;
@@ -352,7 +361,7 @@ ${dialogSelector} {
         ],
         {
           class: "start-tag",
-          "data-hash-table-id": hashTableID,
+          [dataHashTableID]: hashTableID,
         },
       );
     } else {
@@ -372,7 +381,10 @@ ${dialogSelector} {
         title: "show styles for: " + tagName,
       });
       tagNameButton.addEventListener("click", () => {
-        showCSSRules(getElementUniquely(tagNameButton));
+        const element = getElementUniquely(tagNameButton);
+        showCSSRules(element);
+        $(cssTagNameSelector).innerText = element.tagName + ":";
+        updateCustomCssTextareaHashTableID(tagNameButton);
       });
       return tagNameButton;
     }
@@ -454,9 +466,7 @@ ${dialogSelector} {
 
   function getElementUniquely(attributeInputOrTagNameButton) {
     const elementHashTableID =
-      attributeInputOrTagNameButton.parentElement.getAttribute(
-        "data-hash-table-id",
-      );
+      attributeInputOrTagNameButton.parentElement.getAttribute(dataHashTableID);
     const element = htmlElementHashTable[elementHashTableID];
     return element;
   }
@@ -471,14 +481,41 @@ ${dialogSelector} {
   function inspectCSS() {
     if ($(cssInspectorSelector)) return;
 
-    const cssInspector = el("pre", null, {
-      id: cssInspectorSelector.replace("#", ""),
+    customCssTextarea = el("textarea", "", {
+      id: customCssTextareaSelector,
+      [dataHashTableID]: -1 /* intentionally invalid */,
     });
+
+    inspectedCssPre = el("pre", "", {
+      id: inspectedCssPreSelector.replace("#", ""),
+    });
+
+    const cssInspector = el(
+      "div",
+      [
+        el("p", "", { id: cssTagNameSelector.replace("#", "") }),
+        customCssTextarea,
+        inspectedCssPre,
+      ],
+      {
+        id: cssInspectorSelector.replace("#", ""),
+      },
+    );
     inspectorContents.append(cssInspector);
+
+    customCssTextarea.addEventListener("keyup", () => {
+      /* TODO: update style="..." */
+    });
 
     /* TODO */
     /* checkboxes and 2 inputs for properties and values */
     /* always one extra checkbox and extra 2 empty inputs if all have prop+val filled */
+  }
+
+  function updateCustomCssTextareaHashTableID(tagNameButton) {
+    const hashTableID =
+      tagNameButton.parentElement.getAttribute(dataHashTableID);
+    customCssTextarea.setAttribute(dataHashTableID, hashTableID);
   }
 
   function showCSSRules(element) {
@@ -492,7 +529,7 @@ ${dialogSelector} {
 `;
     }
 
-    $(cssInspectorSelector).innerText =
+    $(inspectedCssPreSelector).innerText =
       `${styleAttributeString}${cssRulesString}`;
   }
 
@@ -529,7 +566,7 @@ ${declarations
   }
 
   function clearCssInspector() {
-    if ($(cssInspectorSelector)) $(cssInspectorSelector).innerText = "";
+    if ($(inspectedCssPreSelector)) $(inspectedCssPreSelector).innerText = "";
   }
 
   function inspectJS() {
