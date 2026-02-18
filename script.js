@@ -584,6 +584,13 @@ ${dialogSelector} {
       attributeInput.innerText = `style="${styleValue}"`;
       triggerEvent(attributeInput, "blur");
     });
+
+    customCssStyleGlobal.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        document.execCommand("insertLineBreak"); /* for contenteditable style */
+        event.preventDefault();
+      }
+    });
   }
 
   function triggerEvent(element, eventName = "", data) {
