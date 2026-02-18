@@ -9,7 +9,7 @@ javascript: (() => {
   const cssInspectorSelector = "#css-inspector";
   const jsInspectorSelector = "#js-inspector";
   const cssTagNameSelector = "#css-tag-name";
-  const customCssTextareaSelector = "#custom-css";
+  const customCssTextareaForElementSelector = "#custom-css";
   const inspectedCssPreSelector = "#inspected-css";
 
   const refreshButtonID = "refresh-html-button";
@@ -22,7 +22,7 @@ javascript: (() => {
   const indenter = "  ";
   let htmlElementHashTable = {};
 
-  let customCssTextarea = null;
+  let customCssTextareaForElement = null;
   let inspectedCssPre = null;
 
   runMainLogic();
@@ -197,8 +197,8 @@ ${dialogSelector} {
             outline: 1px solid #7cb5e0;
             color: #7cb5e0;
             padding: 0.25rem;
-            &:has(${customCssTextareaSelector}[data-hash-table-id="-1"]) ${cssTagNameSelector},
-            ${customCssTextareaSelector}[data-hash-table-id="-1"] {
+            &:has(${customCssTextareaForElementSelector}[data-hash-table-id="-1"]) ${cssTagNameSelector},
+            ${customCssTextareaForElementSelector}[data-hash-table-id="-1"] {
                 display: none;
             }
         }
@@ -491,8 +491,8 @@ ${dialogSelector} {
   function inspectCSS() {
     if ($(cssInspectorSelector)) return;
 
-    customCssTextarea = el("textarea", "", {
-      id: customCssTextareaSelector.replace("#", ""),
+    customCssTextareaForElement = el("textarea", "", {
+      id: customCssTextareaForElementSelector.replace("#", ""),
       [dataHashTableID]: -1 /* intentionally invalid */,
       placeholder: "custom css for this element only",
     });
@@ -505,7 +505,7 @@ ${dialogSelector} {
       "div",
       [
         el("p", "", { id: cssTagNameSelector.replace("#", "") }),
-        customCssTextarea,
+        customCssTextareaForElement,
         inspectedCssPre,
       ],
       {
@@ -514,8 +514,8 @@ ${dialogSelector} {
     );
     inspectorContents.append(cssInspector);
 
-    customCssTextarea.addEventListener("blur", () => {
-      const style = customCssTextarea.value
+    customCssTextareaForElement.addEventListener("blur", () => {
+      const style = customCssTextareaForElement.value
         .trim()
         .replace(/^style=["']?/, "")
         .replace(/["']$/, "")
@@ -524,7 +524,8 @@ ${dialogSelector} {
         .join(";")
         .replace(/;;+/g, ";");
 
-      const hashTableID = customCssTextarea.getAttribute(dataHashTableID);
+      const hashTableID =
+        customCssTextareaForElement.getAttribute(dataHashTableID);
       const attributeInput = $(
         `.start-tag[${dataHashTableID}="${hashTableID}"]`,
       ).querySelector(".attribute-input");
@@ -562,14 +563,14 @@ ${dialogSelector} {
   function updateCustomCssTextareaHashTableID(attributeInputOrTagNameButton) {
     const hashTableID =
       attributeInputOrTagNameButton.parentElement.getAttribute(dataHashTableID);
-    customCssTextarea.setAttribute(dataHashTableID, hashTableID);
+    customCssTextareaForElement.setAttribute(dataHashTableID, hashTableID);
   }
 
   function showCSSRules(element) {
     const cssRulesString = getCssRulesString(element);
     const styleAttributeString = getStyleAttributeString(element);
 
-    customCssTextarea.value = styleAttributeString
+    customCssTextareaForElement.value = styleAttributeString
       .trim()
       .split(";")
       .map((d) => d.trim())
@@ -612,7 +613,8 @@ ${declarations
   }
 
   function clearCssInspector() {
-    if (customCssTextarea) customCssTextarea.setAttribute(dataHashTableID, -1);
+    if (customCssTextareaForElement)
+      customCssTextareaForElement.setAttribute(dataHashTableID, -1);
     if (inspectedCssPre) inspectedCssPre.innerText = "";
   }
 
