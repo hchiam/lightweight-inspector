@@ -245,6 +245,9 @@ ${dialogSelector} {
   }
 
   function repopulateHtmlInspector(htmlInspector) {
+    const scrollTop = htmlInspector.scrollTop;
+    const scrollLeft = htmlInspector.scrollLeft;
+
     clearHtmlInspector(htmlInspector);
 
     temporarilyRemoveInspectorFromDOM();
@@ -253,6 +256,9 @@ ${dialogSelector} {
     populateHtmlInspectorAndTree(htmlInspector);
 
     temporarilyPutInspectorBackInDOM();
+
+    htmlInspector.scrollTop = scrollTop;
+    htmlInspector.scrollLeft = scrollLeft;
   }
 
   function clearHtmlInspector(htmlInspector) {
