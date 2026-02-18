@@ -9,7 +9,7 @@ javascript: (() => {
   const cssInspectorSelector = "#css-inspector";
   const jsInspectorSelector = "#js-inspector";
   const cssTagNameSelector = "#css-tag-name";
-  const customCssTextareaForElementSelector = "#custom-css";
+  const customCssTextareaForElementSelector = "#custom-css-for-element";
   const inspectedCssPreSelector = "#inspected-css";
 
   const refreshButtonID = "refresh-html-button";
