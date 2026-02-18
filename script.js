@@ -199,26 +199,12 @@ ${dialogSelector} {
             outline: 1px solid #7cb5e0;
             color: #7cb5e0;
             padding: 0.25rem;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            grid-template-areas:
-              "t a"
-              "e a"
-              "i a";
-            ${cssTagNameSelector} {
-              grid-area: t;
-            }
-            ${customCssTextareaForElementSelector} {
-              grid-area: e;
-            }
-            ${inspectedCssPreSelector} {
-              grid-area: i;
-            }
             ${customCssStyleGlobalSelector} {
-              grid-area: a;
               display: block;
+              position: sticky;
+              inset-block-end: 0;
               white-space: pre;
-              background: white;
+              background: #fffe;
               color: black;
               font-family: monospace;
               transition: padding 0.2s;
