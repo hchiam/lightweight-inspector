@@ -10,7 +10,7 @@ javascript: (() => {
   const jsInspectorSelector = "#js-inspector";
   const cssTagNameSelector = "#css-tag-name";
   const customCssTextareaForElementSelector = "#custom-css-for-element";
-  const customCssTextareaGlobalSelector = "#custom-css-global";
+  const customCssStyleGlobalSelector = "#custom-css-global";
   const inspectedCssPreSelector = "#inspected-css";
 
   const refreshButtonID = "refresh-html-button";
@@ -24,7 +24,7 @@ javascript: (() => {
   let htmlElementHashTable = {};
 
   let customCssTextareaForElement = null;
-  let customCssTextareaGlobal = null;
+  let customCssStyleGlobal = null;
   let inspectedCssPre = null;
 
   runMainLogic();
@@ -214,8 +214,13 @@ ${dialogSelector} {
             ${inspectedCssPreSelector} {
               grid-area: i;
             }
-            ${customCssTextareaGlobalSelector} {
+            ${customCssStyleGlobalSelector} {
               grid-area: a;
+              display: block;
+              white-space: pre;
+              background: white;
+              color: black;
+              font-family: monospace;
             }
             &:has(${customCssTextareaForElementSelector}[data-hash-table-id="-1"]) ${cssTagNameSelector},
             ${customCssTextareaForElementSelector}[data-hash-table-id="-1"] {
@@ -521,13 +526,19 @@ ${dialogSelector} {
       id: inspectedCssPreSelector.replace("#", ""),
     });
 
-    customCssTextareaGlobal = el("textarea", null, {
-      id: customCssTextareaGlobalSelector.replace("#", ""),
-      placeholder: "custom css for all elements - use selectors",
-    });
-    customCssTextareaGlobal.value = `* {
+    customCssStyleGlobal = el(
+      "style",
+      `/* custom css for all elements - use selectors: */
+
+* {
   
-}`;
+}`,
+      {
+        id: customCssStyleGlobalSelector.replace("#", ""),
+        title: "custom css for all elements - use selectors",
+        contenteditable: true,
+      },
+    );
 
     const cssInspector = el(
       "div",
@@ -535,7 +546,7 @@ ${dialogSelector} {
         el("p", "", { id: cssTagNameSelector.replace("#", "") }),
         customCssTextareaForElement,
         inspectedCssPre,
-        customCssTextareaGlobal,
+        customCssStyleGlobal,
       ],
       {
         id: cssInspectorSelector.replace("#", ""),
@@ -544,7 +555,7 @@ ${dialogSelector} {
     inspectorContents.append(cssInspector);
 
     customCssTextareaForElement.addEventListener("blur", () => {
-      const style = customCssTextareaForElement.value
+      const styleValue = customCssTextareaForElement.value
         .trim()
         .replace(/^style=["']?/, "")
         .replace(/["']$/, "")
@@ -559,13 +570,9 @@ ${dialogSelector} {
         `.start-tag[${dataHashTableID}="${hashTableID}"]`,
       ).querySelector(".attribute-input");
 
-      attributeInput.innerText = `style="${style}"`;
+      attributeInput.innerText = `style="${styleValue}"`;
       triggerEvent(attributeInput, "blur");
     });
-
-    /* TODO */
-    /* checkboxes and 2 inputs for properties and values */
-    /* always one extra checkbox and extra 2 empty inputs if all have prop+val filled */
   }
 
   function triggerEvent(element, eventName = "", data) {
