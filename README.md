@@ -6,7 +6,7 @@ Just one of the things I'm working on. <https://github.com/hchiam/learning>
 
 1) enable minimally inspecting only a few things in js/css/html in a browser on a mobile device, and
 
-2) make it easier to trust by making it easier to find and read [the whole code on GitHub](https://github.com/hchiam/lightweight-inspector/blob/main/script.js).
+2) make it easier to trust by making it easier to find and read [the whole code on GitHub](https://github.com/hchiam/lightweight-inspector/blob/main/script.js). (no deps)
 
 ## script.js code
 
