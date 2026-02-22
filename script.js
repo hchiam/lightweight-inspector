@@ -168,15 +168,16 @@ ${dialogSelector} {
                 span {
                     color: white;
                 }
-                span[contenteditable="true"],
-                span[contenteditable=""] {
+                .attribute-input {
                     background: black;
                     color: orange;
                     border: 1px solid orange;
                     margin-inline-start: 1ch;
                     padding-inline: 0.25rem;
-                    min-height: 1.5rem;
+                    min-height: max(44px, 1.5rem);
                     min-width: 44px;
+                    width: 44px;
+                    font-family: monospace;
                     display: flex;
                     align-items: center;
                 }
@@ -435,10 +436,11 @@ ${dialogSelector} {
         ...matches.map((text, i) => {
           const isAttribute = i % 2 === 0; /* even index = split delimiters */
           if (isAttribute) {
-            const attributeInput = el("span", text, {
+            const attributeInput = el("input", "", {
               class: "attribute-input",
-              contenteditable: true,
             });
+            attributeInput.value = text;
+            updateWidthToFitValue(attributeInput);
             initializeAttributeInputEventListener(attributeInput);
             return attributeInput;
           } else {
@@ -451,11 +453,10 @@ ${dialogSelector} {
 
   function emptyAttribute() {
     const attributeInput = el(
-      "span",
+      "input",
       "" /* intentionally empty input to enable adding attribute(s) */,
       {
         class: "attribute-input",
-        contenteditable: true,
       },
     );
     initializeAttributeInputEventListener(attributeInput);
@@ -466,6 +467,9 @@ ${dialogSelector} {
     const previousText = attributeInput.innerText;
     attributeInput.addEventListener("focus", () => {
       clearCssInspector();
+    });
+    attributeInput.addEventListener("keyup", () => {
+      updateWidthToFitValue(attributeInput);
     });
     attributeInput.addEventListener("blur", () => {
       const currentText = attributeInput.innerText.trim();
@@ -496,6 +500,10 @@ ${dialogSelector} {
         }
       }
     });
+  }
+
+  function updateWidthToFitValue(attributeInput) {
+    attributeInput.style.width = attributeInput.value.length + 1 + "ch";
   }
 
   function getElementUniquely(attributeInputOrTagNameButton) {
