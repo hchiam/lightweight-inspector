@@ -10,7 +10,7 @@ javascript: (() => {
   const jsInspectorSelector = "#js-inspector";
   const cssTagNameSelector = "#css-tag-name";
   const customCssTextareaForElementSelector = "#custom-css-for-element";
-  const customCssStyleGlobalSelector = "#custom-css-global";
+  const customCssTextareaGlobalSelector = "#custom-css-global";
   const inspectedCssPreSelector = "#inspected-css";
 
   const refreshButtonID = "refresh-html-button";
@@ -24,6 +24,7 @@ javascript: (() => {
   let htmlElementHashTable = {};
 
   let customCssTextareaForElement = null;
+  let customCssTextareaGlobal = null;
   let customCssStyleGlobal = null;
   let inspectedCssPre = null;
 
@@ -199,7 +200,7 @@ ${dialogSelector} {
             outline: 1px solid #7cb5e0;
             color: #7cb5e0;
             padding: 0.25rem;
-            ${customCssStyleGlobalSelector} {
+            ${customCssTextareaGlobalSelector} {
               display: block;
               position: sticky;
               inset-block-end: 0;
@@ -209,18 +210,8 @@ ${dialogSelector} {
               color: black;
               font-family: monospace;
               transition: padding 0.2s;
-              &:focus {
-                padding-block-start: 1rem;
-                &::before {
-                  margin-block-start: -1rem;
-                  content: "changes to this will take effect right away: ";
-                  position: absolute;
-                  background: #00fb;
-                  color: white;
-                }
-              }
             }
-            ${customCssStyleGlobalSelector},
+            ${customCssTextareaGlobalSelector},
             ${customCssTextareaForElementSelector} {
                 width: 100%;
                 max-height: 40%;
@@ -534,19 +525,17 @@ ${dialogSelector} {
       id: inspectedCssPreSelector.replace("#", ""),
     });
 
-    customCssStyleGlobal = el(
-      "style",
-      `/* custom css for all elements - use selectors: */
-
+    customCssTextareaGlobal = el("textarea", null, {
+      id: customCssTextareaGlobalSelector.replace("#", ""),
+      title: "custom css for all elements - use selectors",
+      placeholder: "custom css for all elements - use selectors",
+    });
+    customCssTextareaGlobal.value = `/* custom css for all elements - use selectors: */
 * {
   
-}`,
-      {
-        id: customCssStyleGlobalSelector.replace("#", ""),
-        title: "custom css for all elements - use selectors",
-        contenteditable: true,
-      },
-    );
+}`;
+
+    customCssStyleGlobal = el("style", customCssTextareaGlobal.innerText);
 
     const cssInspector = el(
       "div",
@@ -554,6 +543,7 @@ ${dialogSelector} {
         el("p", "", { id: cssTagNameSelector.replace("#", "") }),
         customCssTextareaForElement,
         inspectedCssPre,
+        customCssTextareaGlobal,
         customCssStyleGlobal,
       ],
       {
@@ -582,11 +572,8 @@ ${dialogSelector} {
       triggerEvent(attributeInput, "blur");
     });
 
-    customCssStyleGlobal.addEventListener("keydown", (event) => {
-      if (event.key === "Enter") {
-        document.execCommand("insertLineBreak"); /* for contenteditable style */
-        event.preventDefault();
-      }
+    customCssTextareaGlobal.addEventListener("blur", () => {
+      customCssStyleGlobal.innerText = customCssTextareaGlobal.value;
     });
   }
 
