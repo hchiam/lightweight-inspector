@@ -203,6 +203,7 @@ ${dialogSelector} {
               display: block;
               position: sticky;
               inset-block-end: 0;
+              inset-inline-start: 0;
               white-space: pre;
               background: #fffe;
               color: black;
@@ -218,6 +219,16 @@ ${dialogSelector} {
                   color: white;
                 }
               }
+            }
+            ${customCssStyleGlobalSelector},
+            ${customCssTextareaForElementSelector} {
+                width: 100%;
+                max-height: 40%;
+                overflow: auto;
+            }
+            ${customCssTextareaForElementSelector} {
+                position: sticky;
+                inset-inline-start: 0;
             }
             &:has(${customCssTextareaForElementSelector}[data-hash-table-id="-1"]) ${cssTagNameSelector},
             ${customCssTextareaForElementSelector}[data-hash-table-id="-1"] {
