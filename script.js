@@ -704,7 +704,7 @@ ${declarations
       },
       errorCallback: function () {
         jsInspector.append(createConsoleMessage("red", arguments));
-        jsInspector.append(createConsoleMessage("red", [getStackTrace()]));
+        jsInspector.append(createConsoleMessage("blue", [getStackTrace()]));
         scrollToEndOfConsoleLog();
       },
       debugCallback: function () {
@@ -721,7 +721,7 @@ ${declarations
       },
       traceCallback: function () {
         jsInspector.append(createConsoleMessage("white", arguments));
-        jsInspector.append(createConsoleMessage("red", getStackTrace()));
+        jsInspector.append(createConsoleMessage("blue", [getStackTrace()]));
         scrollToEndOfConsoleLog();
       },
       warnCallback: function () {
