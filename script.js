@@ -704,7 +704,6 @@ ${declarations
       },
       errorCallback: function () {
         jsInspector.append(createConsoleMessage("red", arguments));
-        jsInspector.append(createConsoleMessage("blue", [getStackTrace()]));
         scrollToEndOfConsoleLog();
       },
       debugCallback: function () {
@@ -721,7 +720,6 @@ ${declarations
       },
       traceCallback: function () {
         jsInspector.append(createConsoleMessage("white", arguments));
-        jsInspector.append(createConsoleMessage("blue", [getStackTrace()]));
         scrollToEndOfConsoleLog();
       },
       warnCallback: function () {
@@ -729,12 +727,6 @@ ${declarations
         scrollToEndOfConsoleLog();
       },
     });
-  }
-
-  function getStackTrace() {
-    const obj = {};
-    Error.captureStackTrace(obj, getStackTrace);
-    return obj.stack;
   }
 
   function runConsoleInput(consoleInput) {
@@ -813,12 +805,20 @@ ${declarations
     };
 
     window.addEventListener("error", function (event) {
-      errorCallback(event.error);
+      console.error(event.error);
+      console.trace(getStackTrace());
     });
 
     window.addEventListener("unhandledrejection", function (event) {
-      errorCallback(event.reason);
+      console.error(event.reason);
+      console.trace(getStackTrace());
     });
+  }
+
+  function getStackTrace() {
+    const obj = {};
+    Error.captureStackTrace(obj, getStackTrace);
+    return obj.stack;
   }
 
   function createConsoleMessage(colour, args) {
