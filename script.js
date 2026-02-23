@@ -719,7 +719,7 @@ ${declarations
         scrollToEndOfConsoleLog();
       },
       traceCallback: function () {
-        jsInspector.append(createConsoleMessage("white", arguments));
+        jsInspector.append(createTraceMessage("white", arguments));
         scrollToEndOfConsoleLog();
       },
       warnCallback: function () {
@@ -825,6 +825,12 @@ ${declarations
     const argsArray = Array.from(args);
     const text = argsArray.map(handleHtmlElementInConsole).join(" ");
     return el("p", text, { class: colour });
+  }
+
+  function createTraceMessage(colour, args) {
+    const argsArray = Array.from(args);
+    const text = argsArray.map(handleHtmlElementInConsole).join(" ");
+    return el("details", el("p", text, { class: colour }));
   }
 
   function handleHtmlElementInConsole(arg) {
