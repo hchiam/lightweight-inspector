@@ -813,11 +813,11 @@ ${declarations
     };
 
     window.addEventListener("error", function (event) {
-      errorCallback(JSON.stringify(event));
+      errorCallback(event.error);
     });
 
     window.addEventListener("unhandledrejection", function (event) {
-      errorCallback(JSON.stringify(event));
+      errorCallback(event.reason);
     });
   }
 
