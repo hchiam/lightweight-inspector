@@ -805,13 +805,13 @@ ${declarations
     };
 
     window.addEventListener("error", function (event) {
-      console.error(event.error);
-      console.trace(getStackTrace());
+      errorCallback(event.error);
+      traceCallback(getStackTrace());
     });
 
     window.addEventListener("unhandledrejection", function (event) {
-      console.error(event.reason);
-      console.trace(getStackTrace());
+      errorCallback(event.reason);
+      traceCallback(getStackTrace());
     });
   }
 
