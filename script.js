@@ -650,11 +650,15 @@ ${declarations
 
   function getCssRulesObjects(element) {
     return [...document.styleSheets]
-      .map((sheet) =>
-        [...sheet.cssRules].filter((rule) =>
-          element.matches(rule.selectorText),
-        ),
-      )
+      .map((sheet) => {
+        try {
+          return [...sheet.cssRules].filter((rule) =>
+            element.matches(rule.selectorText),
+          );
+        } catch (e) {
+          return [];
+        }
+      })
       .flat();
   }
 
