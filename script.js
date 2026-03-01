@@ -215,6 +215,7 @@ ${dialogSelector} {
             ${customCssTextareaGlobalSelector},
             ${customCssTextareaForElementSelector} {
                 width: 100%;
+                height: 25%;
                 max-height: 40%;
                 overflow: auto;
             }
