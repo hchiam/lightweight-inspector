@@ -13,7 +13,9 @@ javascript: (() => {
   const customCssTextareaGlobalSelector = "#custom-css-global";
   const inspectedCssPreSelector = "#inspected-css";
 
+  const htmlStickyButtonsContainerID = "html-sticky-buttons-container";
   const refreshButtonID = "refresh-html-button";
+  const jumpToBodyButtonID = "jump-to-body-button";
 
   const dataHashTableID = "data-hash-table-id";
 
@@ -145,14 +147,16 @@ ${dialogSelector} {
         ${htmlInspectorSelector} {
             outline: 1px solid orange;
             color: white;
-            #${refreshButtonID} {
+            #${htmlStickyButtonsContainerID} {
                 position: sticky;
                 inset-inline-start: 0;
                 inset-block-start: 0;
-                min-height: 44px;
-                min-width: 44px;
-                background: #ff9c5eee;
                 z-index: 1;
+                button {
+                  min-height: 44px;
+                  min-width: 44px;
+                  background: #ff9c5eee;
+                }
             }
             .start-tag {
                 display: flex;
@@ -276,10 +280,29 @@ ${dialogSelector} {
     const refreshButton = el("button", "refresh:", {
       id: refreshButtonID,
     });
-    htmlInspector.append(refreshButton);
     refreshButton.addEventListener("click", () => {
       repopulateHtmlInspector(htmlInspector);
     });
+
+    const jumpToBodyButton = el("button", "jump to body", {
+      id: jumpToBodyButtonID,
+    });
+    jumpToBodyButton.addEventListener("click", () => {
+      const bodyButton = htmlInspector.querySelector(
+        '.tag-name[title="show styles for: body"]',
+      );
+      bodyButton.scrollIntoView();
+      htmlInspector.scrollTop -= bodyButton.offsetHeight;
+    });
+
+    const htmlStickyButtonsContainer = el(
+      "div",
+      [refreshButton, jumpToBodyButton],
+      {
+        id: htmlStickyButtonsContainerID,
+      },
+    );
+    htmlInspector.append(htmlStickyButtonsContainer);
 
     repopulateHtmlInspector(htmlInspector);
   }
@@ -305,7 +328,7 @@ ${dialogSelector} {
 
   function clearHtmlInspector(htmlInspector) {
     [...htmlInspector.children]
-      .filter((child) => child.id !== refreshButtonID)
+      .filter((child) => child.id !== htmlStickyButtonsContainerID)
       .forEach((child) => child.remove());
   }
 
