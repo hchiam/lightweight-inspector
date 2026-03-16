@@ -14,9 +14,9 @@ Just one of the things I'm working on. <https://github.com/hchiam/learning>
 
 ## [bookmarklet](https://github.com/hchiam/learning-js/tree/main/bookmarklets#bookmarklets) to run the [script.js](https://github.com/hchiam/lightweight-inspector/blob/main/script.js)
 
-__**MAKE SURE YOU UNDERSTAND THE CODE IN
+_**MAKE SURE YOU UNDERSTAND THE CODE IN
 [script.js](https://github.com/hchiam/lightweight-inspector/blob/main/script.js)
-BEFORE YOU USE THIS OR ANY BOOKMARKLET CLAIMING TO USE IT!**__
+BEFORE YOU USE THIS OR ANY BOOKMARKLET CLAIMING TO USE IT!**_
 
 ```js
 javascript:(()=>{
