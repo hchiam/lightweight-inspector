@@ -488,7 +488,7 @@ ${dialogSelector} {
   }
 
   function initializeAttributeInputEventListener(attributeInput) {
-    const previousText = attributeInput.innerText;
+    const previousText = attributeInput.value;
     attributeInput.addEventListener("focus", () => {
       clearCssInspector();
     });
@@ -496,15 +496,15 @@ ${dialogSelector} {
       updateWidthToFitValue(attributeInput);
     });
     attributeInput.addEventListener("blur", () => {
-      const currentText = attributeInput.innerText.trim();
+      const currentText = attributeInput.value.trim();
       if (currentText !== previousText) {
         const isValidAttribute =
-          currentText === "" || currentText.match(/^[^=]+?="[^"]*?"$/);
+          currentText === "" || /^[^=]+?="[^"]*?"$/.test(currentText);
         if (!isValidAttribute) {
           alert(
             'attribute needs to be formatted as atttribute="" even if "" is empty',
           );
-          attributeInput.innerText = previousText;
+          attributeInput.value = previousText;
         } else {
           const [, previousAtribute, previousValue] =
             previousText.match(/^([^=]+?)="([^"]*?)"$/) ?? [];
@@ -517,10 +517,8 @@ ${dialogSelector} {
           if (currentText) {
             element.setAttribute(currentAtribute, currentValue);
           }
-          if (currentAtribute !== "style") {
-            repopulateHtmlInspector($(htmlInspectorSelector));
-            clearCssInspector();
-          }
+          repopulateHtmlInspector($(htmlInspectorSelector));
+          clearCssInspector();
         }
       }
     });
@@ -600,7 +598,7 @@ ${dialogSelector} {
         `.start-tag[${dataHashTableID}="${hashTableID}"]`,
       ).querySelector(".attribute-input");
 
-      attributeInput.innerText = `style="${styleValue}"`;
+      attributeInput.value = `style="${styleValue}"`;
       triggerEvent(attributeInput, "blur");
     });
 
