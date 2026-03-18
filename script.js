@@ -506,16 +506,16 @@ ${dialogSelector} {
           );
           attributeInput.value = previousText;
         } else {
-          const [, previousAtribute, previousValue] =
+          const [, previousAttribute, previousValue] =
             previousText.match(/^([^=]+?)="([^"]*?)"$/) ?? [];
-          const [, currentAtribute, currentValue] =
+          const [, currentAttribute, currentValue] =
             currentText.match(/^([^=]+?)="([^"]*?)"$/) ?? [];
           const element = getElementUniquely(attributeInput);
-          if (currentAtribute !== previousAtribute) {
-            element.removeAttribute(previousAtribute);
+          if (currentAttribute !== previousAttribute) {
+            element.removeAttribute(previousAttribute);
           }
           if (currentText) {
-            element.setAttribute(currentAtribute, currentValue);
+            element.setAttribute(currentAttribute, currentValue);
           }
           repopulateHtmlInspector($(htmlInspectorSelector));
           clearCssInspector();
