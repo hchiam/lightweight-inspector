@@ -18,7 +18,10 @@ _**MAKE SURE YOU UNDERSTAND THE CODE IN
 [script.js](https://github.com/hchiam/lightweight-inspector/blob/main/script.js)
 BEFORE YOU USE THIS OR ANY BOOKMARKLET CLAIMING TO USE IT!**_
 
-### for the latest
+### bookmarklet to automatically use the latest [version](https://github.com/hchiam/lightweight-inspector/releases)
+
+<details>
+<summary>(click to expand)</summary>
 
 ```js
 javascript:(()=>{
@@ -43,7 +46,14 @@ javascript:(()=>{
 })();
 ```
 
-#### example locked to release version 0.0.4 to avoid automatic updates
+</details>
+
+### bookmarklet example locked to [version](https://github.com/hchiam/lightweight-inspector/releases) **0.0.4**
+
+to avoid automatic updates:
+
+<details>
+<summary>(click to expand)</summary>
 
 ```js
 javascript:(()=>{
@@ -67,6 +77,8 @@ javascript:(()=>{
     }
 })();
 ```
+
+</details>
 
 ## with [console-log-element](https://github.com/hchiam/console-log-element)
 
