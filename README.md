@@ -18,9 +18,36 @@ _**MAKE SURE YOU UNDERSTAND THE CODE IN
 [script.js](https://github.com/hchiam/lightweight-inspector/blob/main/script.js)
 BEFORE YOU USE THIS OR ANY BOOKMARKLET CLAIMING TO USE IT!**_
 
+### for the latest
+
 ```js
 javascript:(()=>{
     const src = 'https://raw.githubusercontent.com/hchiam/lightweight-inspector/refs/heads/main/script.js';
+    try {
+        if (!document.addedLightweightInspectorSecuritypolicyviolationEventListener) {
+            document.addedLightweightInspectorSecuritypolicyviolationEventListener = true;
+            document.addEventListener('securitypolicyviolation', (e) => {
+                alert(`CSP blocking lightweight-inspector`);
+            });
+        }
+        fetch(src).then(x=>x.text()).then(x=>{eval(x);});
+    } catch(e) {
+        try {
+            const script = document.createElement('script');
+            script.src = src;
+            document.body.append(script);
+        } catch(e) {
+            alert(`couldn't start lightweight-inspector`);
+        }
+    }
+})();
+```
+
+#### example locked to release version 0.0.4 to avoid automatic updates
+
+```js
+javascript:(()=>{
+    const src = 'https://raw.githubusercontent.com/hchiam/lightweight-inspector/0.0.4/script.js';
     try {
         if (!document.addedLightweightInspectorSecuritypolicyviolationEventListener) {
             document.addedLightweightInspectorSecuritypolicyviolationEventListener = true;
