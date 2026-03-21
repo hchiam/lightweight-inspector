@@ -192,6 +192,14 @@ ${dialogSelector} {
                 color: white;
                 width: max-content;
             }
+            .text-content-input {
+                background: black;
+                color: orange;
+                border: 1px solid orange;
+                padding-inline: 0.25rem;
+                font-family: monospace;
+                display: block;
+            }
             summary {
                 color: orange;
                 pre {
@@ -348,31 +356,32 @@ ${dialogSelector} {
   ) {
     if (element.nodeType === Node.TEXT_NODE) {
       if (element.textContent.trim()) {
+        const textContentTextarea = el("textarea", null, {
+          class: "text-content-input",
+        });
+        textContentTextarea.value = element.textContent;
+        textContentTextarea.addEventListener("keyup", () => {
+          element.textContent = textContentTextarea.value;
+        });
         if (element.textContent.split("\n").filter(Boolean).length < 2) {
-          htmlInspector.append(
-            el("pre", createIndentedText(element.textContent, indent)),
-          );
+          textContentTextarea.style.marginInlineStart = `${indent * indenter.length}ch`;
+          htmlInspector.append(textContentTextarea);
         } else {
           htmlInspector.append(
-            el("details", [
-              el(
-                "summary",
+            el(
+              "details",
+              [
                 el(
-                  "pre",
+                  "summary",
                   el(
-                    "i",
-                    el(
-                      "b",
-                      createIndentedText(
-                        "(click to show/hide textContent:)",
-                        indent,
-                      ),
-                    ),
+                    "pre",
+                    el("i", el("b", "  (click to show/hide textContent:)")),
                   ),
                 ),
-              ),
-              el("pre", createIndentedText(element.textContent, indent)),
-            ]),
+                textContentTextarea,
+              ],
+              { style: `margin-inline-start: ${indent * indenter.length}ch` },
+            ),
           );
         }
       }
