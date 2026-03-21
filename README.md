@@ -48,7 +48,7 @@ javascript:(()=>{
 
 </details>
 
-### bookmarklet example locked to [version](https://github.com/hchiam/lightweight-inspector/releases) **0.0.6**
+### bookmarklet example locked to [version](https://github.com/hchiam/lightweight-inspector/releases) **0.0.7**
 
 to avoid automatic updates:
 
@@ -57,7 +57,7 @@ to avoid automatic updates:
 
 ```js
 javascript:(()=>{
-    const src = 'https://raw.githubusercontent.com/hchiam/lightweight-inspector/0.0.6/script.js';
+    const src = 'https://raw.githubusercontent.com/hchiam/lightweight-inspector/0.0.7/script.js';
     try {
         if (!document.addedLightweightInspectorSecuritypolicyviolationEventListener) {
             document.addedLightweightInspectorSecuritypolicyviolationEventListener = true;
@@ -97,3 +97,9 @@ bun dev
 ```
 
 this will automatically run <http://localhost:3000/example>
+
+and for Howard to deploy to <https://lightweight-inspector.vercel.app>
+
+```sh
+bun run deploy
+```
