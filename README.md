@@ -87,3 +87,13 @@ Firefox _on mobile_ seems to make it a little harder to run bookmarklets from yo
 ```js
 $('#firefox-extension-console-log-element')?.remove();$('#script_firefox-extension-console-log-element')?.remove();
 ```
+
+## local development
+
+using [`bun`](https://github.com/hchiam/learning-bun):
+
+```sh
+bun run dev
+```
+
+this will automatically run <http://localhost:3000/example>
