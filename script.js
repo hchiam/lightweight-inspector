@@ -436,7 +436,7 @@ ${dialogSelector} {
       tagNameButton.addEventListener("click", () => {
         const element = getElementUniquely(tagNameButton);
         showCSSRules(element);
-        $(cssTagNameSelector).innerText = element.tagName + ":";
+        $(cssTagNameSelector).innerText = element.tagName + " style=";
         updateCustomCssTextareaHashTableID(tagNameButton);
       });
       return tagNameButton;
