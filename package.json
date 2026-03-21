@@ -1,5 +1,5 @@
 {
     "scripts": {
-        "dev": "bunx serve . & open http://localhost:3000/example"
+        "dev": "open http://localhost:3000/example; bunx serve ."
     }
 }
