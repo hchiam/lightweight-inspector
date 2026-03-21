@@ -434,13 +434,17 @@ ${dialogSelector} {
         title: "show styles for: " + tagName,
       });
       tagNameButton.addEventListener("click", () => {
-        const element = getElementUniquely(tagNameButton);
-        showCSSRules(element);
-        $(cssTagNameSelector).innerText = element.tagName + " style=";
-        updateCustomCssTextareaHashTableID(tagNameButton);
+        showTagCSSRules(tagNameButton);
       });
       return tagNameButton;
     }
+  }
+
+  function showTagCSSRules(tagNameButton) {
+    const element = getElementUniquely(tagNameButton);
+    showCSSRules(element);
+    $(cssTagNameSelector).innerText = element.tagName + " style=";
+    updateCustomCssTextareaHashTableID(tagNameButton);
   }
 
   function processAttributes(startTagText) {
@@ -491,6 +495,10 @@ ${dialogSelector} {
     const previousText = attributeInput.value;
     attributeInput.addEventListener("focus", () => {
       clearCssInspector();
+      const tagNameButton = attributeInput
+        .closest(".start-tag")
+        .querySelector(".tag-name");
+      showTagCSSRules(tagNameButton);
     });
     attributeInput.addEventListener("keyup", () => {
       updateWidthToFitValue(attributeInput);
