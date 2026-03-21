@@ -667,16 +667,28 @@ ${declarations
   }
 
   function getCssRulesArray(element) {
-    return getCssRulesObjects(element).map((rule) => rule.cssText);
+    return getCssRulesObjects(element).map((customRuleObject) => {
+      return (
+        `\n/* ${customRuleObject.href || "?"} */\n` +
+        customRuleObject.rule.cssText
+      );
+    });
   }
 
   function getCssRulesObjects(element) {
     return [...document.styleSheets]
       .map((sheet) => {
         try {
-          return [...sheet.cssRules].filter((rule) =>
-            element.matches(rule.selectorText),
-          );
+          const sheetHref = sheet.href;
+          return [...sheet.cssRules]
+            .filter((rule) => element.matches(rule.selectorText))
+            .map((rule) => {
+              const customRuleObject = {
+                rule: rule,
+              };
+              if (sheetHref) customRuleObject.href = sheetHref;
+              return customRuleObject;
+            });
         } catch (e) {
           return [];
         }
