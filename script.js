@@ -496,32 +496,44 @@ ${dialogSelector} {
       updateWidthToFitValue(attributeInput);
     });
     attributeInput.addEventListener("blur", () => {
-      const currentText = attributeInput.value.trim();
-      if (currentText !== previousText) {
-        const isValidAttribute =
-          currentText === "" || /^[^=]+?="[^"]*?"$/.test(currentText);
-        if (!isValidAttribute) {
-          alert(
-            'attribute needs to be formatted as atttribute="" even if "" is empty',
-          );
-          attributeInput.value = previousText;
-        } else {
-          const [, previousAttribute, previousValue] =
-            previousText.match(/^([^=]+?)="([^"]*?)"$/) ?? [];
-          const [, currentAttribute, currentValue] =
-            currentText.match(/^([^=]+?)="([^"]*?)"$/) ?? [];
-          const element = getElementUniquely(attributeInput);
-          if (currentAttribute !== previousAttribute) {
-            element.removeAttribute(previousAttribute);
-          }
-          if (currentText) {
-            element.setAttribute(currentAttribute, currentValue);
-          }
+      updateAttribute(attributeInput, previousText);
+    });
+  }
+
+  function updateAttribute(
+    attributeInput,
+    previousText,
+    preserveInspectors = false,
+  ) {
+    const currentText = attributeInput.value.trim();
+    if (currentText !== previousText) {
+      const isValidAttribute =
+        currentText === "" || /^[^=]+?="[^"]*?"$/.test(currentText);
+      if (!isValidAttribute) {
+        alert(
+          'attribute needs to be formatted as atttribute="" even if "" is empty',
+        );
+        attributeInput.value = previousText;
+      } else {
+        const [, previousAttribute, previousValue] =
+          previousText.match(/^([^=]+?)="([^"]*?)"$/) ?? [];
+        const [, currentAttribute, currentValue] =
+          currentText.match(/^([^=]+?)="([^"]*?)"$/) ?? [];
+        const element = getElementUniquely(attributeInput);
+        if (currentAttribute !== previousAttribute) {
+          element.removeAttribute(previousAttribute);
+        }
+        if (currentText) {
+          element.setAttribute(currentAttribute, currentValue);
+        }
+        if (!preserveInspectors) {
           repopulateHtmlInspector($(htmlInspectorSelector));
           clearCssInspector();
+        } else {
+          updateWidthToFitValue(attributeInput);
         }
       }
-    });
+    }
   }
 
   function updateWidthToFitValue(attributeInput) {
@@ -582,7 +594,7 @@ ${dialogSelector} {
     );
     inspectorContents.append(cssInspector);
 
-    customCssTextareaForElement.addEventListener("blur", () => {
+    customCssTextareaForElement.addEventListener("keyup", () => {
       const styleValue = customCssTextareaForElement.value
         .trim()
         .replace(/^style=["']?/, "")
@@ -598,34 +610,14 @@ ${dialogSelector} {
         `.start-tag[${dataHashTableID}="${hashTableID}"]`,
       ).querySelector(".attribute-input");
 
+      const previousText = attributeInput.value;
       attributeInput.value = `style="${styleValue}"`;
-      triggerEvent(attributeInput, "blur");
+      updateAttribute(attributeInput, previousText, true);
     });
 
-    customCssTextareaGlobal.addEventListener("blur", () => {
+    customCssTextareaGlobal.addEventListener("keyup", () => {
       customCssStyleGlobal.innerText = customCssTextareaGlobal.value;
     });
-  }
-
-  function triggerEvent(element, eventName = "", data) {
-    if (!element || !eventName) return;
-    var event;
-    if (document.createEvent) {
-      event = document.createEvent("HTMLEvents");
-      event.initEvent(eventName, true, true);
-      event.eventName = eventName;
-      if (eventName.includes("key")) {
-        console.log(element, eventName, data);
-        element.dispatchEvent(new KeyboardEvent("keypress", data));
-      } else {
-        element.dispatchEvent(event);
-      }
-    } else {
-      event = document.createEventObject();
-      event.eventName = eventName;
-      event.eventType = eventName;
-      element.fireEvent("on" + event.eventType, event);
-    }
   }
 
   function updateCustomCssTextareaHashTableID(attributeInputOrTagNameButton) {
