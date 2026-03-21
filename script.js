@@ -18,6 +18,7 @@ javascript: (() => {
   const jumpToBodyButtonID = "jump-to-body-button";
 
   const dataHashTableID = "data-hash-table-id";
+  const textContentInputSelector = ".text-content-input";
 
   let dialog = null;
   let inspectorContents = null;
@@ -192,7 +193,7 @@ ${dialogSelector} {
                 color: white;
                 width: max-content;
             }
-            .text-content-input {
+            ${textContentInputSelector} {
                 background: black;
                 color: orange;
                 border: 1px solid orange;
@@ -357,11 +358,22 @@ ${dialogSelector} {
     if (element.nodeType === Node.TEXT_NODE) {
       if (element.textContent.trim()) {
         const textContentTextarea = el("textarea", null, {
-          class: "text-content-input",
+          class: textContentInputSelector.replace(".", ""),
         });
         textContentTextarea.value = element.textContent;
         textContentTextarea.addEventListener("keyup", () => {
           element.textContent = textContentTextarea.value;
+        });
+        textContentTextarea.addEventListener("focus", () => {
+          const hashTableID = Object.entries(htmlElementHashTable).find(
+            ([, el]) => el === element.parentElement,
+          )?.[0];
+          if (hashTableID !== undefined) {
+            const tagNameButton = $(
+              `.start-tag[${dataHashTableID}="${hashTableID}"] .tag-name`,
+            );
+            if (tagNameButton) showTagCSSRules(tagNameButton);
+          }
         });
         if (element.textContent.split("\n").filter(Boolean).length < 2) {
           textContentTextarea.style.marginInlineStart = `${indent * indenter.length}ch`;
