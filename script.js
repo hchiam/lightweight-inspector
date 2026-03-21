@@ -611,7 +611,7 @@ ${dialogSelector} {
       ).querySelector(".attribute-input");
 
       const previousText = attributeInput.value;
-      attributeInput.value = `style="${styleValue}"`;
+      attributeInput.value = styleValue ? `style="${styleValue}"` : "";
       updateAttribute(attributeInput, previousText, true);
     });
 
