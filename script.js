@@ -65,9 +65,12 @@ javascript: (() => {
   function showDialog() {
     const alreadyExistingElement = $(dialogSelector);
     if (!alreadyExistingElement) {
+      const versionFromFetchUrl = getVersionFromFetchUrl();
       dialog = el("dialog", [
         el("form", el("button", "x"), { method: "dialog" }),
-        el("p", "lightweight-inspector", { id: "title" }),
+        el("p", "lightweight-inspector" + (versionFromFetchUrl ?? ""), {
+          id: "title",
+        }),
         el("div", null, { id: inspectorContentsSelector.replace("#", "") }),
         el(
           "style",
@@ -272,6 +275,17 @@ ${dialogSelector} {
     }
     inspectorContents = dialog.querySelector(inspectorContentsSelector);
     dialog.showModal();
+  }
+
+  function getVersionFromFetchUrl() {
+    const entries = performance.getEntriesByType("resource");
+    for (const entry of entries) {
+      const match = entry.name.match(
+        /lightweight-inspector\/(.+?)\/script\.js/,
+      );
+      if (match && !match[1].includes("main")) return match[1];
+    }
+    return null;
   }
 
   function inspect() {
