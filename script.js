@@ -365,7 +365,9 @@ ${dialogSelector} {
           element.textContent = textContentTextarea.value;
         });
         textContentTextarea.addEventListener("focus", () => {
-          const hashTableID = Object.values(htmlElementHashTable).indexOf(element.parentElement);
+          const hashTableID = Object.values(htmlElementHashTable).indexOf(
+            element.parentElement,
+          );
           if (hashTableID >= 0) {
             const tagNameButton = $(
               `.start-tag[${dataHashTableID}="${hashTableID}"] .tag-name`,
