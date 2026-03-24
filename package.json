@@ -1,6 +1,6 @@
 {
     "scripts": {
-        "dev": "open http://localhost:3000; bun ./index.html",
+        "dev": "open http://localhost:3000; bunx serve .",
         "deploy": "vercel --prod; open https://lightweight-inspector.vercel.app # https://lightweight-inspector.vercel.app"
     }
 }
