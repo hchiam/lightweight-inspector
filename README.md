@@ -8,7 +8,7 @@ Just one of the things I'm working on. <https://github.com/hchiam/learning>
 
 2) make it easier to trust by making it easier to find and read [the whole code on GitHub](https://github.com/hchiam/lightweight-inspector/blob/main/script.js). (no deps)
 
-<center><img src="lightweight-inspector-example.png" alt="example screenshot" height="200"></center>
+<p align="center"><img src="lightweight-inspector-example.png" alt="example screenshot" height="200"></p>
 
 ## script.js code
 
