@@ -68,7 +68,7 @@ javascript: (() => {
       const versionFromFetchUrl = getVersionFromFetchUrl();
       dialog = el("dialog", [
         el("form", el("button", "x"), { method: "dialog" }),
-        el("p", "lightweight-inspector" + (versionFromFetchUrl ?? ""), {
+        el("p", "lightweight-inspector" + (" " + versionFromFetchUrl ?? ""), {
           id: "title",
         }),
         el("div", null, { id: inspectorContentsSelector.replace("#", "") }),
