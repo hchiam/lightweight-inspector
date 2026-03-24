@@ -1,5 +1,7 @@
 # lightweight-inspector
 
+[![GitHub release](https://img.shields.io/github/v/release/hchiam/lightweight-inspector)](https://github.com/hchiam/lightweight-inspector/releases)
+
 Just one of the things I'm working on. <https://github.com/hchiam/learning>
 
 ## 2 goals
