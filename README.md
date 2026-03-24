@@ -48,7 +48,7 @@ javascript:(()=>{
 
 </details>
 
-### bookmarklet example locked to [version](https://github.com/hchiam/lightweight-inspector/releases) **0.0.8**
+### bookmarklet example locked to [version](https://github.com/hchiam/lightweight-inspector/releases) **0.0.9**
 
 to avoid automatic updates:
 
@@ -57,7 +57,7 @@ to avoid automatic updates:
 
 ```js
 javascript:(()=>{
-    const src = 'https://raw.githubusercontent.com/hchiam/lightweight-inspector/0.0.8/script.js';
+    const src = 'https://raw.githubusercontent.com/hchiam/lightweight-inspector/0.0.9/script.js';
     try {
         if (!document.addedLightweightInspectorSecuritypolicyviolationEventListener) {
             document.addedLightweightInspectorSecuritypolicyviolationEventListener = true;
