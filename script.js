@@ -200,6 +200,8 @@ ${dialogSelector} {
                 padding-inline: 0.25rem;
                 font-family: monospace;
                 display: block;
+                width: 100%;
+                overflow-x: auto;
             }
             summary {
                 color: orange;
@@ -379,22 +381,39 @@ ${dialogSelector} {
           textContentTextarea.style.marginInlineStart = `${indent * indenter.length}ch`;
           htmlInspector.append(textContentTextarea);
         } else {
-          htmlInspector.append(
-            el(
-              "details",
-              [
+          const detailsEl = el(
+            "details",
+            [
+              el(
+                "summary",
                 el(
-                  "summary",
-                  el(
-                    "pre",
-                    el("i", el("b", "  (click to show/hide textContent:)")),
-                  ),
+                  "pre",
+                  el("i", el("b", "  (click to show/hide textContent:)")),
                 ),
-                textContentTextarea,
-              ],
-              { style: `margin-inline-start: ${indent * indenter.length}ch` },
-            ),
+              ),
+              textContentTextarea,
+            ],
+            { style: `margin-inline-start: ${indent * indenter.length}ch` },
           );
+          detailsEl.addEventListener("toggle", () => {
+            if (detailsEl.open) {
+              const lines = textContentTextarea.value.split("\n");
+              const firstNonEmptyIndex = lines.findIndex(
+                (line) => line.trim() !== "",
+              );
+              if (firstNonEmptyIndex > 0) {
+                const style = getComputedStyle(textContentTextarea);
+                const paddingTop = parseFloat(style.paddingTop);
+                const paddingBottom = parseFloat(style.paddingBottom);
+                const contentHeight =
+                  textContentTextarea.scrollHeight - paddingTop - paddingBottom;
+                const lineHeight = contentHeight / lines.length;
+                textContentTextarea.scrollTop =
+                  paddingTop + firstNonEmptyIndex * lineHeight;
+              }
+            }
+          });
+          htmlInspector.append(detailsEl);
         }
       }
     } else if (element.nodeType === Node.ELEMENT_NODE) {
