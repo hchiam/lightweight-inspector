@@ -98,15 +98,13 @@ $('#firefox-extension-console-log-element')?.remove();$('#script_firefox-extensi
 
 <details>
 
-using [`bun`](https://github.com/hchiam/learning-bun):
+using [`bun`](https://github.com/hchiam/learning-bun): (this will automatically run <http://localhost:3000/example>)
 
 ```sh
 bun dev
 ```
 
-this will automatically run <http://localhost:3000/example>
-
-and for Howard to deploy to <https://lightweight-inspector.surge.sh/> and/or <https://lightweight-inspector.vercel.app>
+and for Howard to deploy to <https://lightweight-inspector.surge.sh/> and/or <https://lightweight-inspector.vercel.app> run this:
 
 ```sh
 bun run deploy
