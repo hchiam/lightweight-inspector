@@ -1,6 +1,8 @@
 {
     "scripts": {
         "dev": "open http://localhost:3000; bunx serve .",
-        "deploy": "vercel --prod; open https://lightweight-inspector.vercel.app # https://lightweight-inspector.vercel.app"
+        "deploy": "bun run deploy:surge; bun run deploy:vercel",
+        "deploy:surge": "surge . https://lightweight-inspector.surge.sh; open https://lightweight-inspector.surge.sh",
+        "deploy:vercel": "vercel --prod; open https://lightweight-inspector.vercel.app # https://lightweight-inspector.vercel.app"
     }
 }

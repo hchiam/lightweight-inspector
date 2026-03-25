@@ -104,7 +104,7 @@ bun dev
 
 this will automatically run <http://localhost:3000/example>
 
-and for Howard to deploy to <https://lightweight-inspector.vercel.app>
+and for Howard to deploy to <https://lightweight-inspector.surge.sh/> and/or <https://lightweight-inspector.vercel.app>
 
 ```sh
 bun run deploy
