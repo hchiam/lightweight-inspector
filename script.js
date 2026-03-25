@@ -116,6 +116,7 @@ ${dialogSelector} {
             color: white;
             border: none;
             border-radius: 50%;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.5);
             padding: 0.25rem;
             cursor: pointer;
             min-width: 44px;
@@ -206,7 +207,8 @@ ${dialogSelector} {
                     color: rgba(254,215,170,0.55);
                 }
                 .attribute-input {
-                    background: rgba(0, 0, 0, 0.35);
+                    appearance: none;
+                    background: rgba(0, 0, 0, 0.6);
                     color: #fb923c;
                     border: 1px solid rgba(251,146,60,0.2);
                     margin-inline-start: 1ch;
