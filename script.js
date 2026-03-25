@@ -173,11 +173,12 @@ ${dialogSelector} {
                 inset-inline-start: 0;
                 inset-block-start: 0;
                 z-index: var(--z-sticky);
-                display: flex;
+                display: inline-flex;
                 gap: 0.3rem;
                 padding: 0.3rem;
                 background: rgba(13, 13, 23, 0.6);
                 border-bottom: 1px solid rgba(251,146,60,0.2);
+                border-end-end-radius: 0.5rem;
                 button {
                   min-height: 44px;
                   min-width: 44px;
