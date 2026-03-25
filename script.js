@@ -102,7 +102,8 @@ ${dialogSelector} {
     max-width: calc(100% - var(--gap) * 2);
     max-height: calc(100% - var(--gap) * 2);
     margin: var(--gap);
-    border: none;
+    outline: 1px solid lime;
+    border-radius: 0.5rem;
     font-family: monospace;
     font-size: 1rem;
     form {
@@ -134,10 +135,10 @@ ${dialogSelector} {
         margin: 0;
         padding-inline: 0.5rem;
         padding-block-start: 0.25rem;
+        padding-block-end: 0.1rem;
         background: rgba(20, 20, 40, 0.7);
-        color: white;
-        height: calc(1rem + 1px);
-        line-height: 1rem;
+        color: lime;
+        font-size: 0.75rem;
     }
     input,
     button {
@@ -145,14 +146,14 @@ ${dialogSelector} {
     }
     .white { background: rgba(255,255,255,0.07); color: #e2e8f0; }
     .red { background: rgba(220,38,38,0.18); color: #fca5a5; }
-    .blue { background: rgba(59,130,246,0.18); color: #93c5fd; }
+    .blue { background: rgba(59,130,246,0.18); color: #bfdbfe; }
     .yellow { background: rgba(234,179,8,0.18); color: #fde68a; }
     ${inspectorContentsSelector} {
         height: 100%;
         display: flex;
         flex-direction: column;
         gap: 1rem;
-        padding-block-start: 0.5rem;
+        padding-block-start: calc(0.75rem + 0.25rem + 0.1rem);
         > * {
             flex: 1;
             overflow: auto;
@@ -245,7 +246,7 @@ ${dialogSelector} {
         }
         ${cssInspectorSelector} {
             border-left: 3px solid rgba(96,165,250,0.6);
-            color: #93c5fd;
+            color: #bfdbfe;
             ${customCssTextareaGlobalSelector} {
               display: block;
               position: sticky;
@@ -253,7 +254,7 @@ ${dialogSelector} {
               inset-inline-start: 0;
               white-space: pre;
               background: rgba(0,0,0,0.35);
-              color: #93c5fd;
+              color: #eff6ff;
               font-family: inherit;
               border: 1px solid rgba(96,165,250,0.2);
               border-radius: 0.375rem;
@@ -270,7 +271,7 @@ ${dialogSelector} {
                 position: sticky;
                 inset-inline-start: 0;
                 background: rgba(0,0,0,0.35);
-                color: #93c5fd;
+                color: #eff6ff;
                 font-family: inherit;
                 border: 1px solid rgba(96,165,250,0.2);
                 border-radius: 0.375rem;
@@ -318,7 +319,7 @@ ${dialogSelector} {
                 cursor: pointer;
             }
             p {
-                opacity: 0.8;
+                opacity: 0.9;
             }
         }
     }
