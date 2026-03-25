@@ -114,6 +114,6 @@ and for Howard to deploy to <https://lightweight-inspector.surge.sh/> and/or <ht
 bun run deploy
 ```
 
-if `bun run deploy` seems to have difficulty deploying via CLI, a deploy webhook might work instead: <https://stackoverflow.com/questions/79011901/error-vercel-git-author-must-have-access-to-the-project-on-vercel-to-create-d>
+if `bun run deploy` seems to have difficulty deploying via CLI, a deploy webhook might also be required (to avoid having to change the github noreply email used in commits): <https://stackoverflow.com/questions/79011901/error-vercel-git-author-must-have-access-to-the-project-on-vercel-to-create-d>
 
 </details>
