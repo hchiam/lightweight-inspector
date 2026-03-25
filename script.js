@@ -102,7 +102,7 @@ ${dialogSelector} {
   max-width: calc(100% - var(--gap) * 2);
   max-height: calc(100% - var(--gap) * 2);
   margin: var(--gap);
-  border: 0.125rem solid lime;
+  border: 0.125rem solid #06caca;
   border-radius: 0.5rem;
   font-family: monospace;
   font-size: 1rem;
@@ -138,7 +138,7 @@ ${dialogSelector} {
     padding-inline: 0.5rem;
     padding-block-start: 0.25rem;
     padding-block-end: 0.1rem;
-    background: lime;
+    background: #06caca;
     color: black;
     width: fit-content;
     border-end-end-radius: 0.5rem;
