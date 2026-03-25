@@ -96,6 +96,8 @@ $('#firefox-extension-console-log-element')?.remove();$('#script_firefox-extensi
 
 ## local development
 
+<details>
+
 using [`bun`](https://github.com/hchiam/learning-bun):
 
 ```sh
@@ -109,3 +111,7 @@ and for Howard to deploy to <https://lightweight-inspector.surge.sh/> and/or <ht
 ```sh
 bun run deploy
 ```
+
+if `bun run deploy` seems to have difficulty deploying via CLI, a deploy webhook might work instead: <https://stackoverflow.com/questions/79011901/error-vercel-git-author-must-have-access-to-the-project-on-vercel-to-create-d>
+
+</details>
