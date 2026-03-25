@@ -329,6 +329,20 @@ ${dialogSelector} {
       p {
         opacity: 0.9;
       }
+    }${htmlInspectorSelector} .attribute-input:focus,
+    ${htmlInspectorSelector} ${textContentInputSelector}:focus,
+    ${cssInspectorSelector} ${customCssTextareaForElementSelector}:focus,
+    ${cssInspectorSelector} ${customCssTextareaGlobalSelector}:focus,
+    ${jsInspectorSelector} input:focus {
+      background: black;
+    }
+    ${htmlInspectorSelector},
+    ${cssInspectorSelector},
+    ${jsInspectorSelector} {
+      & input:focus,
+      & textarea:focus {
+        background: black;
+      }
     }
   }
 }
