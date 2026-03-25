@@ -123,6 +123,7 @@ ${dialogSelector} {
       min-height: 44px;
       font-size: 1rem;
       font-weight: bold;
+      font-family: monospace;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -146,6 +147,7 @@ ${dialogSelector} {
   input,
   button {
     border-radius: 0.5rem;
+    font-family: monospace;
   }
   .white { background: rgba(255,255,255,0.07); color: #e2e8f0; }
   .red { background: rgba(220,38,38,0.18); color: #fca5a5; }
@@ -188,6 +190,7 @@ ${dialogSelector} {
           color: rgba(20,10,0,0.9);
           border: none;
           cursor: pointer;
+          font-family: monospace;
         }
       }
       .start-tag {
