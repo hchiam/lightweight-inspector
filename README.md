@@ -98,7 +98,9 @@ $('#firefox-extension-console-log-element')?.remove();$('#script_firefox-extensi
 
 <details>
 
-using [`bun`](https://github.com/hchiam/learning-bun): (this will automatically run <http://localhost:3000/example>)
+(using [`bun`](https://github.com/hchiam/learning-bun))
+
+this will automatically run <http://localhost:3000/example>:
 
 ```sh
 bun dev
