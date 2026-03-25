@@ -98,6 +98,8 @@ $('#firefox-extension-console-log-element')?.remove();$('#script_firefox-extensi
 
 <details>
 
+<summary>local development notes</summary>
+
 (using [`bun`](https://github.com/hchiam/learning-bun))
 
 this will automatically run <http://localhost:3000/example>:
