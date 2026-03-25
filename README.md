@@ -108,6 +108,8 @@ this will automatically run <http://localhost:3000/example>:
 bun dev
 ```
 
+(Howard currently has <https://lightweight-inspector.vercel.app> automatically updated upon commit.)
+
 and for Howard to deploy to <https://lightweight-inspector.surge.sh/> and/or <https://lightweight-inspector.vercel.app> run this:
 
 ```sh
