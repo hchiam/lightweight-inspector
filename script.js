@@ -88,25 +88,35 @@ ${dialogSelector} *::before,
 ${dialogSelector} *::after {
     all: revert;
 }
+${dialogSelector},
+${dialogSelector} * {
+    box-sizing: border-box;
+}
 ${dialogSelector} {
-    background: #00000080;
-    width: 100%;
-    height: 100%;
-    border-color: #0f0e;
+    --gap: 4px;
+    --z-sticky: 1;
+    --z-close-button: calc(var(--z-sticky) + 1);
+    background: rgba(13, 13, 23, 0.6);
+    width: calc(100% - var(--gap) * 2);
+    height: calc(100% - var(--gap) * 2);
+    max-width: calc(100% - var(--gap) * 2);
+    max-height: calc(100% - var(--gap) * 2);
+    margin: var(--gap);
+    border: none;
+    font-family: monospace;
+    font-size: 1rem;
     form {
         position: fixed;
         top: 0.25rem;
         right: 0.25rem;
-        z-index: 1;
+        z-index: var(--z-close-button);
         button {
-            background: #da0e0eee;
+            background: rgba(220, 50, 50, 0.85);
             color: white;
             border: none;
             border-radius: 50%;
             padding: 0.25rem;
             cursor: pointer;
-            width: 1rem;
-            height: 1rem;
             min-width: 44px;
             min-height: 44px;
             font-size: 1rem;
@@ -117,15 +127,15 @@ ${dialogSelector} {
         }
     }
     #title {
-        position: fixed;
-        top: -2px;
+        position: absolute;
+        top: 0;
         left: 0;
-        padding: 0;
+        right: 0;
         margin: 0;
         padding-inline: 0.5rem;
         padding-block-start: 0.25rem;
-        background: #0f0e;
-        color: black;
+        background: rgba(20, 20, 40, 0.7);
+        color: white;
         height: calc(1rem + 1px);
         line-height: 1rem;
     }
@@ -133,38 +143,46 @@ ${dialogSelector} {
     button {
         border-radius: 0.5rem;
     }
-    .white { background: white; }
-    .red { background: pink; }
-    .blue { background: lightblue; }
-    .yellow { background: yellow; }
+    .white { background: rgba(255,255,255,0.07); color: #e2e8f0; }
+    .red { background: rgba(220,38,38,0.18); color: #fca5a5; }
+    .blue { background: rgba(59,130,246,0.18); color: #93c5fd; }
+    .yellow { background: rgba(234,179,8,0.18); color: #fde68a; }
     ${inspectorContentsSelector} {
         height: 100%;
         display: flex;
         flex-direction: column;
         gap: 1rem;
+        padding-block-start: 0.5rem;
         > * {
             flex: 1;
-            margin-block: 1.5px;
             overflow: auto;
             border-radius: 0.5rem;
-            background: #00000080;
+            background: rgba(13, 13, 23, 0.5);
             p,
             pre {
                 margin: 0;
             }
         }
         ${htmlInspectorSelector} {
-            outline: 1px solid orange;
-            color: white;
+            border-left: 3px solid rgba(251,146,60,0.6);
+            color: #fed7aa;
             #${htmlStickyButtonsContainerID} {
                 position: sticky;
                 inset-inline-start: 0;
                 inset-block-start: 0;
-                z-index: 1;
+                z-index: var(--z-sticky);
+                display: flex;
+                gap: 0.3rem;
+                padding: 0.3rem;
+                background: rgba(13, 13, 23, 0.6);
+                border-bottom: 1px solid rgba(251,146,60,0.2);
                 button {
                   min-height: 44px;
                   min-width: 44px;
-                  background: #ff9c5eee;
+                  background: rgba(251,146,60,0.75);
+                  color: rgba(20,10,0,0.9);
+                  border: none;
+                  cursor: pointer;
                 }
             }
             .start-tag {
@@ -172,47 +190,52 @@ ${dialogSelector} {
                 align-items: center;
                 width: max-content;
                 margin-block-start: 0.5rem;
-                background: #ffa50080;
+                background: rgba(251,146,60,0.1);
                 clip-path: polygon(10px 0px, 0% 50%, 10px 100%, calc(100% - 10px) 100%, 100% 50%, calc(100% - 10px) 0px);
                 .tag-name {
                     min-height: 44px;
                     min-width: 44px;
+                    color: rgba(20, 8, 0, 0.9);
+                    background: rgba(251,146,60,0.7);
+                    border: none;
+                    border-radius: 0.25rem;
+                    cursor: pointer;
                 }
                 span {
-                    color: white;
+                    color: rgba(254,215,170,0.55);
                 }
                 .attribute-input {
-                    background: black;
-                    color: orange;
-                    border: 1px solid orange;
+                    background: rgba(0, 0, 0, 0.35);
+                    color: #fb923c;
+                    border: 1px solid rgba(251,146,60,0.2);
                     margin-inline-start: 1ch;
                     padding-inline: 0.25rem;
                     min-height: max(44px, 1.5rem);
                     min-width: 44px;
                     width: 44px;
-                    font-family: monospace;
+                    font-family: inherit;
                     display: flex;
                     align-items: center;
                 }
             }
             .end-tag {
-                background: #ffa50080;
+                background: rgba(251,146,60,0.06);
                 clip-path: polygon(10px 0px, 0% 50%, 10px 100%, calc(100% - 10px) 100%, 100% 50%, calc(100% - 10px) 0px);
-                color: white;
+                color: rgba(254,215,170,0.45);
                 width: max-content;
             }
             ${textContentInputSelector} {
-                background: black;
-                color: orange;
-                border: 1px solid orange;
+                background: rgba(0,0,0,0.35);
+                color: #fb923c;
+                border: 1px solid rgba(251,146,60,0.2);
                 padding-inline: 0.25rem;
-                font-family: monospace;
+                font-family: inherit;
                 display: block;
                 width: 100%;
                 overflow-x: auto;
             }
             summary {
-                color: orange;
+                color: #fb923c;
                 pre {
                   display: inline;
                   margin-inline-start: -1rem;
@@ -221,18 +244,19 @@ ${dialogSelector} {
             }
         }
         ${cssInspectorSelector} {
-            outline: 1px solid #7cb5e0;
-            color: #7cb5e0;
-            padding: 0.25rem;
+            border-left: 3px solid rgba(96,165,250,0.6);
+            color: #93c5fd;
             ${customCssTextareaGlobalSelector} {
               display: block;
               position: sticky;
               inset-block-end: 0;
               inset-inline-start: 0;
               white-space: pre;
-              background: #fffe;
-              color: black;
-              font-family: monospace;
+              background: rgba(0,0,0,0.35);
+              color: #93c5fd;
+              font-family: inherit;
+              border: 1px solid rgba(96,165,250,0.2);
+              border-radius: 0.375rem;
               transition: padding 0.2s;
             }
             ${customCssTextareaGlobalSelector},
@@ -245,6 +269,22 @@ ${dialogSelector} {
             ${customCssTextareaForElementSelector} {
                 position: sticky;
                 inset-inline-start: 0;
+                background: rgba(0,0,0,0.35);
+                color: #93c5fd;
+                font-family: inherit;
+                border: 1px solid rgba(96,165,250,0.2);
+                border-radius: 0.375rem;
+                &::placeholder {
+                    font-style: italic;
+                }
+            }
+            ${inspectedCssPreSelector} {
+                background: transparent;
+                border: none;
+                border-top: 1px solid rgba(96,165,250,0.15);
+                border-bottom: 1px solid rgba(96,165,250,0.15);
+                opacity: 0.75;
+                cursor: not-allowed;
             }
             &:has(${customCssTextareaForElementSelector}[data-hash-table-id="-1"]) ${cssTagNameSelector},
             ${customCssTextareaForElementSelector}[data-hash-table-id="-1"] {
@@ -252,17 +292,30 @@ ${dialogSelector} {
             }
         }
         ${jsInspectorSelector} {
-            outline: 1px solid yellow;
+            border-left: 3px solid rgba(250,204,21,0.6);
             input,
             button {
                 position: sticky;
                 top: 0;
-                z-index: 1;
+                z-index: var(--z-sticky);
                 min-height: 44px;
                 min-width: 44px;
             }
+            input {
+                background: rgba(0,0,0,0.35);
+                color: #fde68a;
+                border: 1px solid rgba(250,204,21,0.2);
+                padding-inline: 0.5rem;
+                font-family: inherit;
+                &::placeholder {
+                    font-style: italic;
+                }
+            }
             button {
-                background: #f7ff00ee;
+                background: rgba(250,204,21,0.8);
+                color: rgba(20,15,0,0.9);
+                border: none;
+                cursor: pointer;
             }
             p {
                 opacity: 0.8;
@@ -627,7 +680,7 @@ ${dialogSelector} {
     customCssTextareaForElement = el("textarea", null, {
       id: customCssTextareaForElementSelector.replace("#", ""),
       [dataHashTableID]: -1 /* intentionally invalid */,
-      placeholder: "custom css for this element only",
+      placeholder: "custom css for this element only, e.g. color:red;",
     });
 
     inspectedCssPre = el("pre", "", {
