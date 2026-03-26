@@ -470,6 +470,7 @@ ${dialogSelector} {
       if (element.textContent.trim()) {
         const textContentTextarea = el("textarea", null, {
           class: textContentInputSelector.replace(".", ""),
+          rows: "1",
         });
         textContentTextarea.value = element.textContent;
         textContentTextarea.addEventListener("keyup", () => {
