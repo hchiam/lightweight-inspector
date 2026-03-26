@@ -321,6 +321,15 @@ ${dialogSelector} {
         top: 0;
         left: 2rem;
       }
+      &.collapsed {
+        ${cssTagNameSelector} {
+          position: sticky;
+          width: fit-content;
+        }
+        div, p:not(${cssTagNameSelector}), textarea {
+          opacity: 0.5;
+        }
+      }
       ${cssTagNameSelector},
       ${inspectedCssSourceSelector} {
         font-size: 0.75rem;
@@ -735,7 +744,7 @@ ${dialogSelector} {
       ? "." + [...element.classList].join(".")
       : "";
     $(cssTagNameSelector).innerText =
-      element.tagName.toLowerCase() + tagId + tagClasses + " attribute style=";
+      element.tagName.toLowerCase() + tagId + tagClasses;
     updateCustomCssTextareaHashTableID(tagNameButton);
   }
 
