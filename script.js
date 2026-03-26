@@ -176,7 +176,6 @@ ${dialogSelector} {
     ${htmlInspectorSelector} {
       border-left: 3px solid rgba(251,146,60,0.6);
       color: #fed7aa;
-      padding-inline-start: ${markerWidth}rem;
       #${htmlStickyButtonsContainerID} {
         position: sticky;
         inset-inline-start: 0;
@@ -547,14 +546,18 @@ ${dialogSelector} {
       if (endTagText) {
         const startTag = processHtmlStartTag(htmlString, element, 0);
         const details = el("details", null, { open: "" });
-        const marker = el("span", null, {
-          class: treeMarkerSelector.replace(".", ""),
-        });
-        marker.style.marginInlineStart = `${indent * indentUnit - markerWidth}rem`;
-        const summary = el("summary", [marker, startTag]);
+        const marker =
+          indent > 0
+            ? el("span", null, {
+                class: treeMarkerSelector.replace(".", ""),
+              })
+            : null;
+        if (marker)
+          marker.style.marginInlineStart = `${indent * indentUnit - markerWidth}rem`;
+        const summary = el("summary", [marker, startTag].filter(Boolean));
         summary.addEventListener("click", (event) => {
           event.preventDefault();
-          if (marker.contains(event.target)) {
+          if (marker?.contains(event.target)) {
             details.open = !details.open;
           }
         });
