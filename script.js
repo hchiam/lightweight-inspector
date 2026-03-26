@@ -241,7 +241,8 @@ ${dialogSelector} {
         font-family: inherit;
         display: block;
         width: 100%;
-        overflow-x: auto;
+        overflow: hidden;
+        resize: none;
       }
       summary {
         color: #fb923c;
@@ -473,6 +474,7 @@ ${dialogSelector} {
         textContentTextarea.value = element.textContent;
         textContentTextarea.addEventListener("keyup", () => {
           element.textContent = textContentTextarea.value;
+          autoResizeTextarea(textContentTextarea);
         });
         textContentTextarea.addEventListener("focus", () => {
           const hashTableID = Object.values(htmlElementHashTable).indexOf(
@@ -505,20 +507,7 @@ ${dialogSelector} {
           );
           detailsEl.addEventListener("toggle", () => {
             if (detailsEl.open) {
-              const lines = textContentTextarea.value.split("\n");
-              const firstNonEmptyIndex = lines.findIndex(
-                (line) => line.trim() !== "",
-              );
-              if (firstNonEmptyIndex > 0) {
-                const style = getComputedStyle(textContentTextarea);
-                const paddingTop = parseFloat(style.paddingTop);
-                const paddingBottom = parseFloat(style.paddingBottom);
-                const contentHeight =
-                  textContentTextarea.scrollHeight - paddingTop - paddingBottom;
-                const lineHeight = contentHeight / lines.length;
-                textContentTextarea.scrollTop =
-                  paddingTop + firstNonEmptyIndex * lineHeight;
-              }
+              autoResizeTextarea(textContentTextarea);
             }
           });
           container.append(detailsEl);
@@ -568,6 +557,11 @@ ${dialogSelector} {
         });
       }
     }
+  }
+
+  function autoResizeTextarea(textarea) {
+    textarea.style.height = "auto";
+    textarea.style.height = textarea.scrollHeight + "px";
   }
 
   function processHtmlStartTag(htmlText, htmlElement, indent = 0) {
