@@ -333,7 +333,7 @@ ${dialogSelector} {
         border: 1px solid rgba(96,165,250,0.2);
         border-radius: 0.375rem;
         transition: padding 0.2s;
-        width: calc(100% - 1rem);
+        width: calc(100% - 1rem * 2);
         min-height: 1rem;
         min-height: 1lh;
         margin: 0;
