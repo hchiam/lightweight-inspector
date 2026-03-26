@@ -337,20 +337,22 @@ ${dialogSelector} {
         opacity: 0.9;
       }
     }
-    ${htmlInspectorSelector} .attribute-input:focus,
+    ${htmlInspectorSelector} .attribute-input:focus {
+      background: rgba(0, 0, 0, 0.7);
+    }
     ${htmlInspectorSelector} ${textContentInputSelector}:focus,
     ${cssInspectorSelector} ${customCssTextareaForElementSelector}:focus,
     ${cssInspectorSelector} ${inspectedCssTextareaSelector}:focus,
     ${cssInspectorSelector} ${customCssTextareaGlobalSelector}:focus,
     ${jsInspectorSelector} input:focus {
-      background: black;
+      background: rgba(0, 0, 0, 0.5);
     }
     ${htmlInspectorSelector},
     ${cssInspectorSelector},
     ${jsInspectorSelector} {
       & input:focus,
       & textarea:focus {
-        background: black;
+        background: rgba(0, 0, 0, 0.5);
       }
     }
   }
