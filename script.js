@@ -250,11 +250,15 @@ ${dialogSelector} {
           margin-inline-start: -1rem;
           cursor: pointer;
         }
+        &::marker {
+          cursor: pointer;
+        }
       }
       details {
         margin-block-start: 0.5rem;
       }
       summary > .start-tag {
+        display: inline-flex;
         margin-block-start: 0;
       }
     }
@@ -523,23 +527,29 @@ ${dialogSelector} {
     } else if (element.nodeType === Node.ELEMENT_NODE) {
       const htmlString = element.outerHTML;
       const startTag = processHtmlStartTag(htmlString, element, indent);
-      const endTagText = htmlString.trim().match(/<\/[^>]+?>/g)?.at(-1);
+      const endTagText = htmlString
+        .trim()
+        .match(/<\/[^>]+?>/g)
+        ?.at(-1);
 
       if (endTagText) {
         const details = el("details", null, { open: "" });
         const summary = el("summary", startTag);
         summary.addEventListener("click", (event) => {
-          if (
-            event.target.tagName === "BUTTON" ||
-            event.target.tagName === "INPUT"
-          ) {
-            event.preventDefault();
+          event.preventDefault();
+          if (event.clientX < startTag.getBoundingClientRect().left) {
+            details.open = !details.open;
           }
         });
         details.append(summary);
 
         [...element.childNodes].forEach((child) => {
-          populateHtmlInspectorAndTree(htmlInspector, child, indent + 1, details);
+          populateHtmlInspectorAndTree(
+            htmlInspector,
+            child,
+            indent + 1,
+            details,
+          );
         });
 
         details.append(
@@ -549,7 +559,12 @@ ${dialogSelector} {
       } else {
         container.append(startTag);
         [...element.childNodes].forEach((child) => {
-          populateHtmlInspectorAndTree(htmlInspector, child, indent + 1, container);
+          populateHtmlInspectorAndTree(
+            htmlInspector,
+            child,
+            indent + 1,
+            container,
+          );
         });
       }
     }
