@@ -259,7 +259,7 @@ ${dialogSelector} {
         }
         ${treeMarkerSelector} {
           flex-shrink: 0;
-          transition: transform 0.1s;
+          transition: transform 0.2s;
           transform-origin: center;
           cursor: pointer;
           width: 0;
