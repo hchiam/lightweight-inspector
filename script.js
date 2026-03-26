@@ -256,13 +256,17 @@ ${dialogSelector} {
         }
         .tree-marker {
           flex-shrink: 0;
-          transition: transform 0.2s;
+          transition: transform 0.1s;
           transform-origin: center;
           cursor: pointer;
+          width: 0;
+          height: 0;
+          border-block: 0.35rem solid transparent;
+          border-inline-start: 0.6rem solid rgba(251,146,60,0.9);
+          border-inline-end: none;
         }
         pre:not(.start-tag) {
           display: inline;
-          margin-inline-start: -1rem;
           cursor: pointer;
         }
       }
@@ -540,8 +544,8 @@ ${dialogSelector} {
       if (endTagText) {
         const startTag = processHtmlStartTag(htmlString, element, 0);
         const details = el("details", null, { open: "" });
-        const marker = el("span", "▶", { class: "tree-marker" });
-        marker.style.marginInlineStart = `${indent * indentUnit}rem`;
+        const marker = el("span", null, { class: "tree-marker" });
+        marker.style.marginInlineStart = `${indent * indentUnit - 0.5}rem`;
         const summary = el("summary", [marker, startTag]);
         summary.addEventListener("click", (event) => {
           event.preventDefault();
@@ -562,7 +566,7 @@ ${dialogSelector} {
 
         details.append(
           Object.assign(el("pre", endTagText, { class: "end-tag" }), {
-            style: `margin-inline-start: ${indent * indentUnit + 0.5}rem`,
+            style: `margin-inline-start: ${indent * indentUnit}rem`,
           }),
         );
         container.append(details);
