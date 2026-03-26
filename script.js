@@ -169,6 +169,7 @@ ${dialogSelector} {
       overflow: auto;
       border-radius: 0.5rem;
       background: rgba(13, 13, 23, 0.5);
+      position: relative;
       p,
       pre {
         margin: 0;
@@ -315,6 +316,11 @@ ${dialogSelector} {
     ${cssInspectorSelector} {
       border-left: 3px solid rgba(96,165,250,0.6);
       color: #bfdbfe;
+      ${cssTagNameSelector} {
+        position: absolute;
+        top: 0;
+        left: 2rem;
+      }
       ${cssTagNameSelector},
       ${inspectedCssSourceSelector} {
         font-size: 0.75rem;
@@ -724,7 +730,12 @@ ${dialogSelector} {
   function showTagCSSRules(tagNameButton) {
     const element = getElementUniquely(tagNameButton);
     showCSSRules(element);
-    $(cssTagNameSelector).innerText = element.tagName + " attribute style=";
+    const tagId = element.id ? "#" + element.id : "";
+    const tagClasses = element.classList.length
+      ? "." + [...element.classList].join(".")
+      : "";
+    $(cssTagNameSelector).innerText =
+      element.tagName.toLowerCase() + tagId + tagClasses + " attribute style=";
     updateCustomCssTextareaHashTableID(tagNameButton);
   }
 
