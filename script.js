@@ -245,11 +245,17 @@ ${dialogSelector} {
       }
       summary {
         color: #fb923c;
-        pre {
+        pre:not(.start-tag) {
           display: inline;
           margin-inline-start: -1rem;
           cursor: pointer;
         }
+      }
+      details {
+        margin-block-start: 0.5rem;
+      }
+      summary > .start-tag {
+        margin-block-start: 0;
       }
     }
     ${cssInspectorSelector} {
@@ -451,7 +457,10 @@ ${dialogSelector} {
     htmlInspector,
     element = document.documentElement,
     indent = 0,
+    parentContainer = null,
   ) {
+    const container = parentContainer ?? htmlInspector;
+
     if (element.nodeType === Node.TEXT_NODE) {
       if (element.textContent.trim()) {
         const textContentTextarea = el("textarea", null, {
@@ -474,7 +483,7 @@ ${dialogSelector} {
         });
         if (element.textContent.split("\n").filter(Boolean).length < 2) {
           textContentTextarea.style.marginInlineStart = `${indent * indenter.length}ch`;
-          htmlInspector.append(textContentTextarea);
+          container.append(textContentTextarea);
         } else {
           const detailsEl = el(
             "details",
@@ -508,24 +517,40 @@ ${dialogSelector} {
               }
             }
           });
-          htmlInspector.append(detailsEl);
+          container.append(detailsEl);
         }
       }
     } else if (element.nodeType === Node.ELEMENT_NODE) {
       const htmlString = element.outerHTML;
       const startTag = processHtmlStartTag(htmlString, element, indent);
+      const endTagText = htmlString.trim().match(/<\/[^>]+?>/g)?.at(-1);
 
-      htmlInspector.append(startTag);
+      if (endTagText) {
+        const details = el("details", null, { open: "" });
+        const summary = el("summary", startTag);
+        summary.addEventListener("click", (event) => {
+          if (
+            event.target.tagName === "BUTTON" ||
+            event.target.tagName === "INPUT"
+          ) {
+            event.preventDefault();
+          }
+        });
+        details.append(summary);
 
-      [...element.childNodes].forEach((child) => {
-        populateHtmlInspectorAndTree(htmlInspector, child, indent + 1);
-      });
+        [...element.childNodes].forEach((child) => {
+          populateHtmlInspectorAndTree(htmlInspector, child, indent + 1, details);
+        });
 
-      const endTag = htmlString.trim().match(/(<\/[^>]+?>)\s*?$/)?.[1];
-      if (endTag) {
-        htmlInspector.append(
-          el("pre", indenter.repeat(indent) + endTag, { class: "end-tag" }),
+        details.append(
+          el("pre", indenter.repeat(indent) + endTagText, { class: "end-tag" }),
         );
+        container.append(details);
+      } else {
+        container.append(startTag);
+        [...element.childNodes].forEach((child) => {
+          populateHtmlInspectorAndTree(htmlInspector, child, indent + 1, container);
+        });
       }
     }
   }
