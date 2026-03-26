@@ -26,6 +26,7 @@ javascript: (() => {
   let inspectorContents = null;
 
   const indenter = "  ";
+  const indentUnit = 2;
   let htmlElementHashTable = {};
 
   let customCssTextareaForElement = null;
@@ -233,7 +234,6 @@ ${dialogSelector} {
         clip-path: polygon(10px 0px, 0% 50%, 10px 100%, calc(100% - 10px) 100%, 100% 50%, calc(100% - 10px) 0px);
         color: rgba(254,215,170,0.45);
         width: max-content;
-        margin-inline-start: 1em;
       }
       ${textContentInputSelector} {
         background: rgba(0,0,0,0.35);
@@ -248,14 +248,26 @@ ${dialogSelector} {
       }
       summary {
         color: #fb923c;
+        display: flex;
+        align-items: center;
+        list-style: none;
+        &::-webkit-details-marker {
+          display: none;
+        }
+        .tree-marker {
+          flex-shrink: 0;
+          transition: transform 0.2s;
+          transform-origin: center;
+          cursor: pointer;
+        }
         pre:not(.start-tag) {
           display: inline;
           margin-inline-start: -1rem;
           cursor: pointer;
         }
-        &::marker {
-          cursor: pointer;
-        }
+      }
+      details[open] > summary > .tree-marker {
+        transform: rotate(90deg);
       }
       details {
         margin-block-start: 0.5rem;
@@ -493,7 +505,7 @@ ${dialogSelector} {
           }
         });
         if (element.textContent.split("\n").filter(Boolean).length < 2) {
-          textContentTextarea.style.marginInlineStart = `calc(${indent * indenter.length}ch + 1em)`;
+          textContentTextarea.style.marginInlineStart = `${indent * indentUnit}rem`;
           container.append(textContentTextarea);
         } else {
           const detailsEl = el(
@@ -508,7 +520,7 @@ ${dialogSelector} {
               ),
               textContentTextarea,
             ],
-            { style: `margin-inline-start: calc(${indent * indenter.length}ch + 1em)` },
+            { style: `margin-inline-start: ${indent * indenter.length}ch` },
           );
           detailsEl.addEventListener("toggle", () => {
             if (detailsEl.open) {
@@ -520,18 +532,20 @@ ${dialogSelector} {
       }
     } else if (element.nodeType === Node.ELEMENT_NODE) {
       const htmlString = element.outerHTML;
-      const startTag = processHtmlStartTag(htmlString, element, indent);
       const endTagText = htmlString
         .trim()
         .match(/<\/[^>]+?>/g)
         ?.at(-1);
 
       if (endTagText) {
+        const startTag = processHtmlStartTag(htmlString, element, 0);
         const details = el("details", null, { open: "" });
-        const summary = el("summary", startTag);
+        const marker = el("span", "▶", { class: "tree-marker" });
+        marker.style.marginInlineStart = `${indent * indentUnit}rem`;
+        const summary = el("summary", [marker, startTag]);
         summary.addEventListener("click", (event) => {
           event.preventDefault();
-          if (event.clientX < startTag.getBoundingClientRect().left) {
+          if (!startTag.contains(event.target)) {
             details.open = !details.open;
           }
         });
@@ -547,10 +561,13 @@ ${dialogSelector} {
         });
 
         details.append(
-          el("pre", indenter.repeat(indent) + endTagText, { class: "end-tag" }),
+          Object.assign(el("pre", endTagText, { class: "end-tag" }), {
+            style: `margin-inline-start: ${indent * indentUnit + 0.5}rem`,
+          }),
         );
         container.append(details);
       } else {
+        const startTag = processHtmlStartTag(htmlString, element, indent);
         container.append(startTag);
         [...element.childNodes].forEach((child) => {
           populateHtmlInspectorAndTree(
@@ -581,18 +598,16 @@ ${dialogSelector} {
         hashTableID = Object.keys(htmlElementHashTable).length;
         htmlElementHashTable[hashTableID] = htmlElement;
       }
-      return el(
+      const pre = el(
         "pre",
-        [
-          el("span", indenter.repeat(indent) + "<"),
-          processTagName(text),
-          ...processAttributes(text),
-        ],
+        [el("span", "<"), processTagName(text), ...processAttributes(text)],
         {
           class: "start-tag",
           [dataHashTableID]: hashTableID,
         },
       );
+      pre.style.marginInlineStart = `${indent * indentUnit}rem`;
+      return pre;
     } else {
       /* backup: */
       return el("pre", createIndentedText(text, indent));
