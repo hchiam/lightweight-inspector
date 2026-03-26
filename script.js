@@ -245,7 +245,7 @@ ${dialogSelector} {
         font-family: inherit;
         display: block;
         width: 100%;
-        overflow: hidden;
+        overflow: auto;
         resize: none;
       }
       summary {
@@ -310,7 +310,7 @@ ${dialogSelector} {
         min-height: 1lh;
         margin: 0;
         margin-inline-start: 1rem;
-        overflow: hidden;
+        overflow: auto;
         font-family: inherit;
         &::placeholder {
           font-style: italic;
@@ -411,7 +411,7 @@ ${dialogSelector} {
   function inspectHTML() {
     if ($(htmlInspectorSelector)) return;
 
-    const htmlInspector = el("div", null, {
+    const htmlInspector = el("section", null, {
       id: htmlInspectorSelector.replace("#", ""),
     });
     inspectorContents.append(htmlInspector);
@@ -595,9 +595,13 @@ ${dialogSelector} {
 
   function autoResizeTextarea(textarea) {
     textarea.style.height = "auto";
+    const maxHeight = textarea.closest("section").clientHeight / 2;
     textarea.style.height =
-      (textarea.scrollHeight ||
-        parseFloat(getComputedStyle(textarea).lineHeight)) + "px";
+      Math.min(
+        maxHeight,
+        textarea.scrollHeight ||
+          parseFloat(getComputedStyle(textarea).lineHeight),
+      ) + "px";
   }
 
   function processHtmlStartTag(htmlText, htmlElement, indent = 0) {
@@ -791,7 +795,7 @@ ${dialogSelector} {
     const customCssStyleGlobal = el("style", customCssTextareaGlobal.innerText);
 
     const cssInspector = el(
-      "div",
+      "section",
       [
         el("p", "", { id: cssTagNameSelector.replace("#", "") }),
         customCssTextareaForElement,
@@ -929,7 +933,7 @@ ${dialogSelector} {
   function inspectJS() {
     if ($(jsInspectorSelector)) return;
 
-    const jsInspector = el("div", null, {
+    const jsInspector = el("section", null, {
       id: jsInspectorSelector.replace("#", ""),
     });
     inspectorContents.append(jsInspector);
