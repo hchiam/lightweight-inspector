@@ -30,6 +30,8 @@ javascript: (() => {
   let customCssTextareaGlobal = null;
   let inspectedCssTextarea = null;
 
+  let inspectedCssRuleObjects = [];
+
   runMainLogic();
   function runMainLogic() {
     showDialog();
@@ -744,7 +746,6 @@ ${dialogSelector} {
   
 }`;
 
-    const customCssStyleInspected = el("style", "");
     const customCssStyleGlobal = el("style", customCssTextareaGlobal.innerText);
 
     const cssInspector = el(
@@ -754,7 +755,6 @@ ${dialogSelector} {
         customCssTextareaForElement,
         inspectedCssTextarea,
         customCssTextareaGlobal,
-        customCssStyleInspected,
         customCssStyleGlobal,
       ],
       {
@@ -785,7 +785,34 @@ ${dialogSelector} {
     });
 
     inspectedCssTextarea.addEventListener("keyup", () => {
-      customCssStyleInspected.innerText = inspectedCssTextarea.value;
+      const ruleTexts = inspectedCssTextarea.value
+        .split(/\/\*[^*]*\*\//)
+        .map((s) => s.trim())
+        .filter(Boolean);
+
+      ruleTexts.forEach((ruleText, ruleTextIndex) => {
+        const ruleObj = inspectedCssRuleObjects[ruleTextIndex];
+        if (!ruleObj) return;
+
+        const stylesheet = ruleObj.rule.parentStyleSheet;
+
+        const indivRuleIndex = [...stylesheet.cssRules].indexOf(ruleObj.rule);
+        if (indivRuleIndex === -1) return;
+
+        try {
+          stylesheet.deleteRule(indivRuleIndex);
+
+          stylesheet.insertRule(ruleText, indivRuleIndex);
+
+          /* update memory */
+          inspectedCssRuleObjects[ruleTextIndex] = {
+            ...ruleObj,
+            rule: stylesheet.cssRules[indivRuleIndex],
+          };
+        } catch (e) {
+          /* invalid CSS mid-edit, ignore */
+        }
+      });
     });
 
     customCssTextareaGlobal.addEventListener("keyup", () => {
@@ -800,6 +827,7 @@ ${dialogSelector} {
   }
 
   function showCSSRules(element) {
+    inspectedCssRuleObjects = getCssRulesObjects(element);
     const cssRulesString = getCssRulesString(element);
     const styleAttributeString = getStyleAttributeString(element);
 
@@ -835,7 +863,7 @@ ${declarations
   function getCssRulesArray(element) {
     return getCssRulesObjects(element).map((customRuleObject) => {
       return (
-        `\n/* ${customRuleObject.href || "?"} */\n` +
+        `\n/* ${customRuleObject.href || "?"} (PLEASE DON'T DELETE THIS COMMENT) */\n` +
         customRuleObject.rule.cssText
       );
     });
@@ -866,6 +894,7 @@ ${declarations
     if (customCssTextareaForElement)
       customCssTextareaForElement.setAttribute(dataHashTableID, -1);
     if (inspectedCssTextarea) inspectedCssTextarea.value = "";
+    inspectedCssRuleObjects = [];
   }
 
   function inspectJS() {
