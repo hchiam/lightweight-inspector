@@ -21,6 +21,7 @@ javascript: (() => {
 
   const dataHashTableID = "data-hash-table-id";
   const textContentInputSelector = ".text-content-input";
+  const treeMarkerSelector = ".tree-marker";
 
   let dialog = null;
   let inspectorContents = null;
@@ -256,7 +257,7 @@ ${dialogSelector} {
         &::-webkit-details-marker {
           display: none;
         }
-        .tree-marker {
+        ${treeMarkerSelector} {
           flex-shrink: 0;
           transition: transform 0.1s;
           transform-origin: center;
@@ -272,7 +273,7 @@ ${dialogSelector} {
           cursor: pointer;
         }
       }
-      details[open] > summary > .tree-marker {
+      details[open] > summary > ${treeMarkerSelector} {
         transform: rotate(90deg);
       }
       details {
@@ -546,7 +547,9 @@ ${dialogSelector} {
       if (endTagText) {
         const startTag = processHtmlStartTag(htmlString, element, 0);
         const details = el("details", null, { open: "" });
-        const marker = el("span", null, { class: "tree-marker" });
+        const marker = el("span", null, {
+          class: treeMarkerSelector.replace(".", ""),
+        });
         marker.style.marginInlineStart = `${indent * indentUnit - markerWidth}rem`;
         const summary = el("summary", [marker, startTag]);
         summary.addEventListener("click", (event) => {
