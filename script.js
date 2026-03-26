@@ -10,7 +10,9 @@ javascript: (() => {
   const jsInspectorSelector = "#js-inspector";
   const cssTagNameSelector = "#css-tag-name";
   const customCssTextareaForElementSelector = "#custom-css-for-element";
-  const inspectedCssTextareaSelector = "#inspected-css";
+  const inspectedCssContainerSelector = "#inspected-css-rules-container";
+  const inspectedCssSourceSelector = ".inspected-css-source";
+  const inspectedCssTextareaSelector = ".inspected-css-rule";
   const customCssTextareaGlobalSelector = "#custom-css-global";
 
   const htmlStickyButtonsContainerID = "html-sticky-buttons-container";
@@ -28,9 +30,7 @@ javascript: (() => {
 
   let customCssTextareaForElement = null;
   let customCssTextareaGlobal = null;
-  let inspectedCssTextarea = null;
-
-  let inspectedCssRuleObjects = [];
+  let inspectedCssContainer = null;
 
   runMainLogic();
   function runMainLogic() {
@@ -267,31 +267,39 @@ ${dialogSelector} {
     ${cssInspectorSelector} {
       border-left: 3px solid rgba(96,165,250,0.6);
       color: #bfdbfe;
-      ${cssTagNameSelector} {
-        height: 1rem;
+      ${cssTagNameSelector},
+      ${inspectedCssSourceSelector} {
+        font-size: 0.75rem;
+        padding-inline: 0.25rem;
+        margin-block-start: 0.5rem;
+        margin-block-end: 0;
+        color: cyan;
       }
       ${customCssTextareaForElementSelector},
       ${inspectedCssTextareaSelector},
       ${customCssTextareaGlobalSelector} {
         display: block;
-        position: sticky;
-        inset-block-end: 0;
-        inset-inline-start: 0;
         white-space: pre;
         background: rgba(0,0,0,0.35);
-        color: #eff6ff;
+        color: #bfdbfe;
         font-family: inherit;
         border: 1px solid rgba(96,165,250,0.2);
         border-radius: 0.375rem;
         transition: padding 0.2s;
-        width: 100%;
-        height: calc(33% - 1rem/3);
-        max-height: 40%;
+        width: calc(100% - 1rem);
+        min-height: 1rem;
+        min-height: 1lh;
         margin: 0;
-        overflow: auto;
+        margin-inline-start: 1rem;
+        overflow: hidden;
         font-family: inherit;
         &::placeholder {
           font-style: italic;
+        }
+      }
+      ${inspectedCssContainerSelector} {
+        &:empty {
+          display: none;
         }
       }
       &:has(${customCssTextareaForElementSelector}[data-hash-table-id="-1"]) ${cssTagNameSelector},
@@ -552,7 +560,9 @@ ${dialogSelector} {
 
   function autoResizeTextarea(textarea) {
     textarea.style.height = "auto";
-    textarea.style.height = textarea.scrollHeight + "px";
+    textarea.style.height =
+      (textarea.scrollHeight ||
+        parseFloat(getComputedStyle(textarea).lineHeight)) + "px";
   }
 
   function processHtmlStartTag(htmlText, htmlElement, indent = 0) {
@@ -603,7 +613,7 @@ ${dialogSelector} {
   function showTagCSSRules(tagNameButton) {
     const element = getElementUniquely(tagNameButton);
     showCSSRules(element);
-    $(cssTagNameSelector).innerText = element.tagName + " style=";
+    $(cssTagNameSelector).innerText = element.tagName + " attribute style=";
     updateCustomCssTextareaHashTableID(tagNameButton);
   }
 
@@ -731,9 +741,8 @@ ${dialogSelector} {
       placeholder: "custom css for this element only, e.g. color:red;",
     });
 
-    inspectedCssTextarea = el("textarea", null, {
-      id: inspectedCssTextareaSelector.replace("#", ""),
-      placeholder: "inspected css rules will appear here (editable)",
+    inspectedCssContainer = el("div", null, {
+      id: inspectedCssContainerSelector.replace("#", ""),
     });
 
     customCssTextareaGlobal = el("textarea", null, {
@@ -753,7 +762,10 @@ ${dialogSelector} {
       [
         el("p", "", { id: cssTagNameSelector.replace("#", "") }),
         customCssTextareaForElement,
-        inspectedCssTextarea,
+        inspectedCssContainer,
+        el("p", "global custom css:", {
+          class: inspectedCssSourceSelector.replace(".", ""),
+        }),
         customCssTextareaGlobal,
         customCssStyleGlobal,
       ],
@@ -763,7 +775,12 @@ ${dialogSelector} {
     );
     inspectorContents.append(cssInspector);
 
+    autoResizeTextarea(customCssTextareaForElement);
+    autoResizeTextarea(customCssTextareaGlobal);
+
     customCssTextareaForElement.addEventListener("keyup", () => {
+      autoResizeTextarea(customCssTextareaForElement);
+
       const styleValue = customCssTextareaForElement.value
         .trim()
         .replace(/^style=["']?/, "")
@@ -784,38 +801,8 @@ ${dialogSelector} {
       updateAttribute(attributeInput, previousText, true);
     });
 
-    inspectedCssTextarea.addEventListener("keyup", () => {
-      const ruleTexts = inspectedCssTextarea.value
-        .split(/\/\*[^*]*\*\//)
-        .map((s) => s.trim())
-        .filter(Boolean);
-
-      ruleTexts.forEach((ruleText, ruleTextIndex) => {
-        const ruleObj = inspectedCssRuleObjects[ruleTextIndex];
-        if (!ruleObj) return;
-
-        const stylesheet = ruleObj.rule.parentStyleSheet;
-
-        const indivRuleIndex = [...stylesheet.cssRules].indexOf(ruleObj.rule);
-        if (indivRuleIndex === -1) return;
-
-        try {
-          stylesheet.deleteRule(indivRuleIndex);
-
-          stylesheet.insertRule(ruleText, indivRuleIndex);
-
-          /* update memory */
-          inspectedCssRuleObjects[ruleTextIndex] = {
-            ...ruleObj,
-            rule: stylesheet.cssRules[indivRuleIndex],
-          };
-        } catch (e) {
-          /* invalid CSS mid-edit, ignore */
-        }
-      });
-    });
-
     customCssTextareaGlobal.addEventListener("keyup", () => {
+      autoResizeTextarea(customCssTextareaGlobal);
       customCssStyleGlobal.innerText = customCssTextareaGlobal.value;
     });
   }
@@ -827,46 +814,56 @@ ${dialogSelector} {
   }
 
   function showCSSRules(element) {
-    inspectedCssRuleObjects = getCssRulesObjects(element);
-    const cssRulesString = getCssRulesString(element);
-    const styleAttributeString = getStyleAttributeString(element);
-
+    const styleAttributeString = element.getAttribute("style") ?? "";
     customCssTextareaForElement.value = styleAttributeString
       .trim()
       .split(";")
       .map((d) => d.trim())
       .join(";\n")
       .trim();
+    autoResizeTextarea(customCssTextareaForElement);
+    customCssTextareaForElement.scrollTop = 0;
+    $(cssInspectorSelector).scrollTop = 0;
 
-    $(inspectedCssTextareaSelector).value = cssRulesString;
-  }
+    const inspectedCssRuleTextareas = [];
+    inspectedCssContainer.replaceChildren(
+      ...getCssRulesObjects(element).map((ruleObject) => {
+        const [selector, declarations] =
+          ruleObject.rule.cssText.split(/\s*[{}]\s*/);
 
-  function getStyleAttributeString(element) {
-    return element.getAttribute("style") ?? "";
-  }
+        const formattedCssText = `${selector.trim()} {\n${declarations
+          .split(/;\s*/)
+          .filter(Boolean)
+          .map((d) => "  " + d + ";\n")
+          .join("")}}`;
 
-  function getCssRulesString(element) {
-    return getCssRulesArray(element)
-      .map((rule) => {
-        const [selector, declarations] = rule.split(/\s*[{}]\s*/);
-        return `${selector} {
-${declarations
-  .split(/;\s*/)
-  .filter(Boolean)
-  .map((d) => "  " + d + ";\n")
-  .join("")}}`;
-      })
-      .join("\n")
-      .trim();
-  }
-
-  function getCssRulesArray(element) {
-    return getCssRulesObjects(element).map((customRuleObject) => {
-      return (
-        `\n/* ${customRuleObject.href || "?"} (PLEASE DON'T DELETE THIS COMMENT) */\n` +
-        customRuleObject.rule.cssText
-      );
-    });
+        const sourcePath = el("p", ruleObject.href ?? "inline <style>", {
+          class: inspectedCssSourceSelector.replace(".", ""),
+        });
+        const cssTextTextarea = el("textarea", null, {
+          class: inspectedCssTextareaSelector.replace(".", ""),
+        });
+        cssTextTextarea.value = formattedCssText;
+        cssTextTextarea.addEventListener("keyup", () => {
+          autoResizeTextarea(cssTextTextarea);
+          const stylesheet = ruleObject.rule.parentStyleSheet;
+          const ruleIndex = [...stylesheet.cssRules].indexOf(ruleObject.rule);
+          if (ruleIndex === -1) return;
+          try {
+            stylesheet.deleteRule(ruleIndex);
+            stylesheet.insertRule(cssTextTextarea.value, ruleIndex);
+            ruleObject.rule = stylesheet.cssRules[ruleIndex];
+          } catch (e) {
+            /* invalid CSS mid-edit, ignore */
+          }
+        });
+        inspectedCssRuleTextareas.push(cssTextTextarea);
+        return el("div", [sourcePath, cssTextTextarea]);
+      }),
+    );
+    inspectedCssRuleTextareas.forEach((textarea) =>
+      autoResizeTextarea(textarea),
+    );
   }
 
   function getCssRulesObjects(element) {
@@ -893,8 +890,7 @@ ${declarations
   function clearCssInspector() {
     if (customCssTextareaForElement)
       customCssTextareaForElement.setAttribute(dataHashTableID, -1);
-    if (inspectedCssTextarea) inspectedCssTextarea.value = "";
-    inspectedCssRuleObjects = [];
+    if (inspectedCssContainer) inspectedCssContainer.replaceChildren();
   }
 
   function inspectJS() {
