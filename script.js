@@ -333,6 +333,9 @@ ${dialogSelector} {
         border: none;
         cursor: pointer;
       }
+      #console-clear-button {
+        margin-inline-start: 1rem;
+      }
       p {
         opacity: 0.9;
       }
@@ -910,8 +913,12 @@ ${dialogSelector} {
     const consoleInputButton = el("button", "send", {
       id: "console-input-button",
     });
+    const consoleClearButton = el("button", "clear", {
+      id: "console-clear-button",
+    });
     jsInspector.append(consoleInput);
     jsInspector.append(consoleInputButton);
+    jsInspector.append(consoleClearButton);
     consoleInput.addEventListener("keyup", (event) => {
       if (event.key === "Enter") {
         runConsoleInput(consoleInput);
@@ -921,14 +928,24 @@ ${dialogSelector} {
       runConsoleInput(consoleInput);
     });
 
+    const clearConsoleMessages = () => {
+      [...jsInspector.children]
+        .filter(
+          (child) =>
+            child !== consoleInput &&
+            child !== consoleInputButton &&
+            child !== consoleClearButton,
+        )
+        .forEach((child) => child.remove());
+    };
+
+    consoleClearButton.addEventListener("click", () => {
+      const yes = confirm("are you sure you want to clear console?");
+      if (yes) clearConsoleMessages();
+    });
+
     captureConsole({
-      clearCallback: function () {
-        [...jsInspector.children]
-          .filter(
-            (child) => child !== consoleInput && child !== consoleInputButton,
-          )
-          .forEach((child) => child.remove());
-      },
+      clearCallback: clearConsoleMessages,
       logCallback: function () {
         jsInspector.append(createConsoleMessage("white", arguments));
         scrollToEndOfConsoleLog();
