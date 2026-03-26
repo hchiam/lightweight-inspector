@@ -100,6 +100,7 @@ ${dialogSelector} {
   --gap: 4px;
   --z-sticky: 1;
   --z-close-button: calc(var(--z-sticky) + 1);
+  overscroll-behavior: contain;
   background: rgba(13, 13, 23, 0.6);
   width: calc(100% - var(--gap) * 2);
   height: calc(100% - var(--gap) * 2);
@@ -411,6 +412,34 @@ ${dialogSelector} {
         ),
       ]);
       dialog.id = dialogSelector.replace("#", "");
+      let touchStartY = 0;
+      dialog.addEventListener(
+        "touchstart",
+        (e) => {
+          touchStartY = e.touches[0].clientY;
+        },
+        { passive: true },
+      );
+      dialog.addEventListener(
+        "touchmove",
+        (e) => {
+          const deltaY = e.touches[0].clientY - touchStartY;
+          let el = e.target;
+          while (el && el !== dialog) {
+            const overflow = getComputedStyle(el).overflowY;
+            if (overflow === "scroll" || overflow === "auto") {
+              const atTop = el.scrollTop === 0;
+              const atBottom =
+                el.scrollTop + el.clientHeight >= el.scrollHeight;
+              if ((deltaY > 0 && !atTop) || (deltaY < 0 && !atBottom)) return;
+              break;
+            }
+            el = el.parentElement;
+          }
+          e.preventDefault();
+        },
+        { passive: false },
+      );
       document.body.append(dialog);
     } else {
       dialog = alreadyExistingElement;
