@@ -474,13 +474,14 @@ ${dialogSelector} {
     return null;
   }
 
-  function addCollapseToggle(section) {
+  function addCollapseToggle(section, onExpand) {
     const btn = el("button", "-", { class: "section-collapse-btn" });
     btn.title = "collapse section";
     btn.addEventListener("click", () => {
       const collapsed = section.classList.toggle("collapsed");
       btn.textContent = collapsed ? "+" : "-";
       btn.title = collapsed ? "expand section" : "collapse section";
+      if (!collapsed) onExpand?.();
     });
     section.prepend(btn);
   }
@@ -492,7 +493,7 @@ ${dialogSelector} {
   }
 
   function inspectHTML() {
-    if ($(htmlInspectorSelector)) return;
+    if (dialog.querySelector(htmlInspectorSelector)) return;
 
     const htmlInspector = el("section", null, {
       id: htmlInspectorSelector.replace("#", ""),
@@ -593,7 +594,7 @@ ${dialogSelector} {
             element.parentElement,
           );
           if (hashTableID >= 0) {
-            const tagNameButton = $(
+            const tagNameButton = dialog.querySelector(
               `.start-tag[${dataHashTableID}="${hashTableID}"] .tag-name`,
             );
             if (tagNameButton) showTagCSSRules(tagNameButton);
@@ -743,7 +744,7 @@ ${dialogSelector} {
     const tagClasses = element.classList.length
       ? "." + [...element.classList].join(".")
       : "";
-    $(cssTagNameSelector).innerText =
+    dialog.querySelector(cssTagNameSelector).innerText =
       element.tagName.toLowerCase() + tagId + tagClasses;
     updateCustomCssTextareaHashTableID(tagNameButton);
   }
@@ -836,7 +837,7 @@ ${dialogSelector} {
           element.setAttribute(currentAttribute, currentValue);
         }
         if (!preserveInspectors) {
-          repopulateHtmlInspector($(htmlInspectorSelector));
+          repopulateHtmlInspector(dialog.querySelector(htmlInspectorSelector));
           clearCssInspector();
         } else {
           updateWidthToFitValue(attributeInput);
@@ -864,7 +865,7 @@ ${dialogSelector} {
   }
 
   function inspectCSS() {
-    if ($(cssInspectorSelector)) return;
+    if (dialog.querySelector(cssInspectorSelector)) return;
 
     customCssTextareaForElement = el("textarea", null, {
       id: customCssTextareaForElementSelector.replace("#", ""),
@@ -923,9 +924,9 @@ ${dialogSelector} {
 
       const hashTableID =
         customCssTextareaForElement.getAttribute(dataHashTableID);
-      const attributeInput = $(
-        `.start-tag[${dataHashTableID}="${hashTableID}"]`,
-      ).querySelector(".attribute-input");
+      const attributeInput = dialog
+        .querySelector(`.start-tag[${dataHashTableID}="${hashTableID}"]`)
+        .querySelector(".attribute-input");
 
       const previousText = attributeInput.value;
       attributeInput.value = styleValue ? `style="${styleValue}"` : "";
@@ -937,7 +938,13 @@ ${dialogSelector} {
       customCssStyleGlobal.innerText = customCssTextareaGlobal.value;
     });
 
-    addCollapseToggle(cssInspector);
+    addCollapseToggle(cssInspector, () => {
+      autoResizeTextarea(customCssTextareaForElement);
+      autoResizeTextarea(customCssTextareaGlobal);
+      [...dialog.querySelectorAll(inspectedCssTextareaSelector)].forEach(
+        autoResizeTextarea,
+      );
+    });
   }
 
   function updateCustomCssTextareaHashTableID(attributeInputOrTagNameButton) {
@@ -956,7 +963,7 @@ ${dialogSelector} {
       .trim();
     autoResizeTextarea(customCssTextareaForElement);
     customCssTextareaForElement.scrollTop = 0;
-    $(cssInspectorSelector).scrollTop = 0;
+    dialog.querySelector(cssInspectorSelector).scrollTop = 0;
 
     const inspectedCssRuleTextareas = [];
     inspectedCssContainer.replaceChildren(
@@ -1027,7 +1034,7 @@ ${dialogSelector} {
   }
 
   function inspectJS() {
-    if ($(jsInspectorSelector)) return;
+    if (dialog.querySelector(jsInspectorSelector)) return;
 
     const jsInspector = el("section", null, {
       id: jsInspectorSelector.replace("#", ""),
@@ -1122,7 +1129,9 @@ ${dialogSelector} {
   }
 
   function scrollToEndOfConsoleLog() {
-    $(jsInspectorSelector)?.scrollTo(0, $(jsInspectorSelector).scrollHeight);
+    dialog
+      .querySelector(jsInspectorSelector)
+      ?.scrollTo(0, dialog.querySelector(jsInspectorSelector).scrollHeight);
   }
 
   function captureConsole({
