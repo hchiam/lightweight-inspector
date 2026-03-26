@@ -172,6 +172,34 @@ ${dialogSelector} {
       pre {
         margin: 0;
       }
+      &.collapsed {
+        max-height: 3rem;
+        overflow: hidden;
+        flex: none;
+      }
+      .section-collapse-btn {
+        position: sticky;
+        top: 0.25rem;
+        left: 0.25rem;
+        margin-right: 0.5rem;
+        z-index: 10;
+        background: rgba(0,0,0,0.5);
+        color: rgba(255,255,255,0.7);
+        border: 1px solid rgba(255,255,255,0.15);
+        border-radius: 0.25rem;
+        width: 1.5rem;
+        height: 1.5rem;
+        line-height: 1.5rem;
+        cursor: pointer;
+        padding: 0;
+        min-width: unset;
+        min-height: unset;
+      }
+      &.collapsed .section-collapse-btn {
+        background: rgba(255,255,255,0.9);
+        color: rgba(0,0,0,0.8);
+        border: 1px solid rgba(255,255,255,0.9);
+      }
     }
     ${htmlInspectorSelector} {
       border-left: 3px solid rgba(251,146,60,0.6);
@@ -292,7 +320,7 @@ ${dialogSelector} {
         padding-inline: 0.25rem;
         margin-block-start: 0.5rem;
         margin-block-end: 0;
-        color: cyan;
+        color: #00cece;
       }
       ${customCssTextareaForElementSelector},
       ${inspectedCssTextareaSelector},
@@ -329,7 +357,7 @@ ${dialogSelector} {
     ${jsInspectorSelector} {
       border-left: 3px solid rgba(250,204,21,0.6);
       input,
-      button {
+      button:not(.section-collapse-btn) {
         position: sticky;
         top: 0;
         z-index: var(--z-sticky);
@@ -346,7 +374,7 @@ ${dialogSelector} {
           font-style: italic;
         }
       }
-      button {
+      button:not(.section-collapse-btn) {
         background: rgba(250,204,21,0.8);
         color: rgba(20,15,0,0.9);
         border: none;
@@ -402,6 +430,17 @@ ${dialogSelector} {
     return null;
   }
 
+  function addCollapseToggle(section) {
+    const btn = el("button", "-", { class: "section-collapse-btn" });
+    btn.title = "collapse section";
+    btn.addEventListener("click", () => {
+      const collapsed = section.classList.toggle("collapsed");
+      btn.textContent = collapsed ? "+" : "-";
+      btn.title = collapsed ? "expand section" : "collapse section";
+    });
+    section.prepend(btn);
+  }
+
   function inspect() {
     inspectHTML();
     inspectCSS();
@@ -416,7 +455,7 @@ ${dialogSelector} {
     });
     inspectorContents.append(htmlInspector);
 
-    const refreshButton = el("button", "refresh:", {
+    const refreshButton = el("button", "refresh", {
       id: refreshButtonID,
     });
     refreshButton.addEventListener("click", () => {
@@ -443,6 +482,8 @@ ${dialogSelector} {
     );
     htmlInspector.append(htmlStickyButtonsContainer);
 
+    addCollapseToggle(htmlInspector);
+
     repopulateHtmlInspector(htmlInspector);
   }
 
@@ -467,7 +508,11 @@ ${dialogSelector} {
 
   function clearHtmlInspector(htmlInspector) {
     [...htmlInspector.children]
-      .filter((child) => child.id !== htmlStickyButtonsContainerID)
+      .filter(
+        (child) =>
+          child.id !== htmlStickyButtonsContainerID &&
+          !child.classList.contains("section-collapse-btn"),
+      )
       .forEach((child) => child.remove());
   }
 
@@ -842,6 +887,8 @@ ${dialogSelector} {
       autoResizeTextarea(customCssTextareaGlobal);
       customCssStyleGlobal.innerText = customCssTextareaGlobal.value;
     });
+
+    addCollapseToggle(cssInspector);
   }
 
   function updateCustomCssTextareaHashTableID(attributeInputOrTagNameButton) {
@@ -966,7 +1013,8 @@ ${dialogSelector} {
           (child) =>
             child !== consoleInput &&
             child !== consoleInputButton &&
-            child !== consoleClearButton,
+            child !== consoleClearButton &&
+            !child.classList.contains("section-collapse-btn"),
         )
         .forEach((child) => child.remove());
     };
@@ -1007,6 +1055,8 @@ ${dialogSelector} {
         scrollToEndOfConsoleLog();
       },
     });
+
+    addCollapseToggle(jsInspector);
   }
 
   function runConsoleInput(consoleInput) {
