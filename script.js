@@ -942,7 +942,7 @@ ${dialogSelector} {
       id: "console-input",
       placeholder: "js, e.g.: $('body') or $$('p')",
     });
-    const consoleInputButton = el("button", "send", {
+    const consoleInputButton = el("button", "run", {
       id: "console-input-button",
     });
     const consoleClearButton = el("button", "clear", {
