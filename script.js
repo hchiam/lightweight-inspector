@@ -10,8 +10,8 @@ javascript: (() => {
   const jsInspectorSelector = "#js-inspector";
   const cssTagNameSelector = "#css-tag-name";
   const customCssTextareaForElementSelector = "#custom-css-for-element";
+  const inspectedCssTextareaSelector = "#inspected-css";
   const customCssTextareaGlobalSelector = "#custom-css-global";
-  const inspectedCssPreSelector = "#inspected-css";
 
   const htmlStickyButtonsContainerID = "html-sticky-buttons-container";
   const refreshButtonID = "refresh-html-button";
@@ -28,8 +28,7 @@ javascript: (() => {
 
   let customCssTextareaForElement = null;
   let customCssTextareaGlobal = null;
-  let customCssStyleGlobal = null;
-  let inspectedCssPre = null;
+  let inspectedCssTextarea = null;
 
   runMainLogic();
   function runMainLogic() {
@@ -266,6 +265,11 @@ ${dialogSelector} {
     ${cssInspectorSelector} {
       border-left: 3px solid rgba(96,165,250,0.6);
       color: #bfdbfe;
+      ${cssTagNameSelector} {
+        height: 1rem;
+      }
+      ${customCssTextareaForElementSelector},
+      ${inspectedCssTextareaSelector},
       ${customCssTextareaGlobalSelector} {
         display: block;
         position: sticky;
@@ -278,33 +282,15 @@ ${dialogSelector} {
         border: 1px solid rgba(96,165,250,0.2);
         border-radius: 0.375rem;
         transition: padding 0.2s;
-      }
-      ${customCssTextareaGlobalSelector},
-      ${customCssTextareaForElementSelector} {
         width: 100%;
-        height: 25%;
+        height: calc(33% - 1rem/3);
         max-height: 40%;
+        margin: 0;
         overflow: auto;
-      }
-      ${customCssTextareaForElementSelector} {
-        position: sticky;
-        inset-inline-start: 0;
-        background: rgba(0,0,0,0.35);
-        color: #eff6ff;
         font-family: inherit;
-        border: 1px solid rgba(96,165,250,0.2);
-        border-radius: 0.375rem;
         &::placeholder {
           font-style: italic;
         }
-      }
-      ${inspectedCssPreSelector} {
-        background: transparent;
-        border: none;
-        border-top: 1px solid rgba(96,165,250,0.15);
-        border-bottom: 1px solid rgba(96,165,250,0.15);
-        opacity: 0.75;
-        cursor: not-allowed;
       }
       &:has(${customCssTextareaForElementSelector}[data-hash-table-id="-1"]) ${cssTagNameSelector},
       ${customCssTextareaForElementSelector}[data-hash-table-id="-1"] {
@@ -340,9 +326,11 @@ ${dialogSelector} {
       p {
         opacity: 0.9;
       }
-    }${htmlInspectorSelector} .attribute-input:focus,
+    }
+    ${htmlInspectorSelector} .attribute-input:focus,
     ${htmlInspectorSelector} ${textContentInputSelector}:focus,
     ${cssInspectorSelector} ${customCssTextareaForElementSelector}:focus,
+    ${cssInspectorSelector} ${inspectedCssTextareaSelector}:focus,
     ${cssInspectorSelector} ${customCssTextareaGlobalSelector}:focus,
     ${jsInspectorSelector} input:focus {
       background: black;
@@ -741,8 +729,9 @@ ${dialogSelector} {
       placeholder: "custom css for this element only, e.g. color:red;",
     });
 
-    inspectedCssPre = el("pre", "", {
-      id: inspectedCssPreSelector.replace("#", ""),
+    inspectedCssTextarea = el("textarea", null, {
+      id: inspectedCssTextareaSelector.replace("#", ""),
+      placeholder: "inspected css rules will appear here (editable)",
     });
 
     customCssTextareaGlobal = el("textarea", null, {
@@ -755,15 +744,17 @@ ${dialogSelector} {
   
 }`;
 
-    customCssStyleGlobal = el("style", customCssTextareaGlobal.innerText);
+    const customCssStyleInspected = el("style", "");
+    const customCssStyleGlobal = el("style", customCssTextareaGlobal.innerText);
 
     const cssInspector = el(
       "div",
       [
         el("p", "", { id: cssTagNameSelector.replace("#", "") }),
         customCssTextareaForElement,
-        inspectedCssPre,
+        inspectedCssTextarea,
         customCssTextareaGlobal,
+        customCssStyleInspected,
         customCssStyleGlobal,
       ],
       {
@@ -793,6 +784,10 @@ ${dialogSelector} {
       updateAttribute(attributeInput, previousText, true);
     });
 
+    inspectedCssTextarea.addEventListener("keyup", () => {
+      customCssStyleInspected.innerText = inspectedCssTextarea.value;
+    });
+
     customCssTextareaGlobal.addEventListener("keyup", () => {
       customCssStyleGlobal.innerText = customCssTextareaGlobal.value;
     });
@@ -815,7 +810,7 @@ ${dialogSelector} {
       .join(";\n")
       .trim();
 
-    $(inspectedCssPreSelector).innerText = cssRulesString;
+    $(inspectedCssTextareaSelector).value = cssRulesString;
   }
 
   function getStyleAttributeString(element) {
@@ -833,7 +828,8 @@ ${declarations
   .map((d) => "  " + d + ";\n")
   .join("")}}`;
       })
-      .join("\n");
+      .join("\n")
+      .trim();
   }
 
   function getCssRulesArray(element) {
@@ -869,7 +865,7 @@ ${declarations
   function clearCssInspector() {
     if (customCssTextareaForElement)
       customCssTextareaForElement.setAttribute(dataHashTableID, -1);
-    if (inspectedCssPre) inspectedCssPre.innerText = "";
+    if (inspectedCssTextarea) inspectedCssTextarea.value = "";
   }
 
   function inspectJS() {
