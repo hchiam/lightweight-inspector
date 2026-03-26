@@ -233,6 +233,7 @@ ${dialogSelector} {
         clip-path: polygon(10px 0px, 0% 50%, 10px 100%, calc(100% - 10px) 100%, 100% 50%, calc(100% - 10px) 0px);
         color: rgba(254,215,170,0.45);
         width: max-content;
+        margin-inline-start: 1em;
       }
       ${textContentInputSelector} {
         background: rgba(0,0,0,0.35);
@@ -492,7 +493,7 @@ ${dialogSelector} {
           }
         });
         if (element.textContent.split("\n").filter(Boolean).length < 2) {
-          textContentTextarea.style.marginInlineStart = `${indent * indenter.length}ch`;
+          textContentTextarea.style.marginInlineStart = `calc(${indent * indenter.length}ch + 1em)`;
           container.append(textContentTextarea);
         } else {
           const detailsEl = el(
@@ -507,7 +508,7 @@ ${dialogSelector} {
               ),
               textContentTextarea,
             ],
-            { style: `margin-inline-start: ${indent * indenter.length}ch` },
+            { style: `margin-inline-start: calc(${indent * indenter.length}ch + 1em)` },
           );
           detailsEl.addEventListener("toggle", () => {
             if (detailsEl.open) {
