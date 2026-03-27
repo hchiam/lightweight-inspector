@@ -274,7 +274,8 @@ ${dialogSelector} {
         padding-inline: 0.25rem;
         font-family: inherit;
         display: block;
-        width: 100%;
+        width: max(1000px, 100dvw);
+        text-wrap: nowrap;
         overflow: auto;
         resize: none;
       }
