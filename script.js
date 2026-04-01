@@ -971,9 +971,9 @@ ${dialogSelector} {
 
     const inspectedCssRuleTextareas = [];
     inspectedCssContainer.replaceChildren(
-      ...getCssRulesObjects(element).map((ruleObject) => {
+      ...getCssRulesObjects(element).map((customRuleObject) => {
         const [selector, declarations] =
-          ruleObject.rule.cssText.split(/\s*[{}]\s*/);
+          customRuleObject.rule.cssText.split(/\s*[{}]\s*/);
 
         const formattedCssText = `${selector.trim()} {\n${declarations
           .split(/;\s*/)
@@ -981,7 +981,7 @@ ${dialogSelector} {
           .map((d) => "  " + d + ";\n")
           .join("")}}`;
 
-        const sourcePath = el("p", ruleObject.href ?? "inline <style>", {
+        const sourcePath = el("p", customRuleObject.href ?? "inline <style>", {
           class: inspectedCssSourceSelector.replace(".", ""),
         });
         const cssTextTextarea = el("textarea", null, {
@@ -990,13 +990,15 @@ ${dialogSelector} {
         cssTextTextarea.value = formattedCssText;
         cssTextTextarea.addEventListener("keyup", () => {
           autoResizeTextarea(cssTextTextarea);
-          const stylesheet = ruleObject.rule.parentStyleSheet;
-          const ruleIndex = [...stylesheet.cssRules].indexOf(ruleObject.rule);
+          const stylesheet = customRuleObject.rule.parentStyleSheet;
+          const ruleIndex = [...stylesheet.cssRules].indexOf(
+            customRuleObject.rule,
+          );
           if (ruleIndex === -1) return;
           try {
             stylesheet.deleteRule(ruleIndex);
             stylesheet.insertRule(cssTextTextarea.value, ruleIndex);
-            ruleObject.rule = stylesheet.cssRules[ruleIndex];
+            customRuleObject.rule = stylesheet.cssRules[ruleIndex];
           } catch (e) {
             /* invalid CSS mid-edit, ignore */
           }
