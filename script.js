@@ -251,7 +251,7 @@ ${dialogSelector} {
           background: rgba(0, 0, 0, 0.6);
           color: #fb923c;
           border: 1px solid rgba(251,146,60,0.2);
-          margin-inline-start: 1ch;
+          margin-inline-start: 0.5rem;
           padding-inline: 0.25rem;
           min-height: max(44px, 1.5rem);
           min-width: 44px;
@@ -612,12 +612,12 @@ ${dialogSelector} {
                 "summary",
                 el(
                   "pre",
-                  el("i", el("b", "  (click to show/hide textContent:)")),
+                  el("i", el("b", "(click to show/hide textContent:)")),
                 ),
               ),
               textContentTextarea,
             ],
-            { style: `margin-inline-start: ${indent * indenter.length}ch` },
+            { style: `margin-inline-start: ${indent * indentUnit}rem` },
           );
           detailsEl.addEventListener("toggle", () => {
             if (detailsEl.open) {
