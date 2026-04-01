@@ -21,14 +21,14 @@ javascript: (() => {
 
   const dataHashTableID = "data-hash-table-id";
   const textContentInputSelector = ".text-content-input";
-  const treeMarkerSelector = ".tree-marker";
+  const treeToggleSelector = ".tree-toggle";
 
   let dialog = null;
   let inspectorContents = null;
 
   const indenter = "  ";
   const indentUnit = 2;
-  const markerWidth = 2;
+  const toggleWidth = 2;
   let htmlElementHashTable = {};
 
   let customCssTextareaForElement = null;
@@ -287,15 +287,15 @@ ${dialogSelector} {
         &::-webkit-details-marker {
           display: none;
         }
-        ${treeMarkerSelector} {
+        ${treeToggleSelector} {
           flex-shrink: 0;
           transition: transform 0.2s;
           transform-origin: center;
           cursor: pointer;
           width: 0;
           height: 0;
-          border-block: ${markerWidth * 0.5}rem solid transparent;
-          border-inline-start: ${markerWidth}rem solid rgba(251,146,60,0.9);
+          border-block: ${toggleWidth * 0.5}rem solid transparent;
+          border-inline-start: ${toggleWidth}rem solid rgba(251,146,60,0.9);
           border-inline-end: none;
         }
         pre:not(.start-tag) {
@@ -303,7 +303,7 @@ ${dialogSelector} {
           cursor: pointer;
         }
       }
-      details[open] > summary > ${treeMarkerSelector} {
+      details[open] > summary > ${treeToggleSelector} {
         transform: rotate(90deg);
       }
       details {
@@ -637,18 +637,18 @@ ${dialogSelector} {
       if (endTagText) {
         const startTag = processHtmlStartTag(htmlString, element, 0);
         const details = el("details", null, { open: "" });
-        const marker =
+        const toggle =
           indent > 0
             ? el("span", null, {
-                class: treeMarkerSelector.replace(".", ""),
+                class: treeToggleSelector.replace(".", ""),
               })
             : null;
-        if (marker)
-          marker.style.marginInlineStart = `${indent * indentUnit - markerWidth}rem`;
-        const summary = el("summary", [marker, startTag].filter(Boolean));
+        if (toggle)
+          toggle.style.marginInlineStart = `${indent * indentUnit - toggleWidth}rem`;
+        const summary = el("summary", [toggle, startTag].filter(Boolean));
         summary.addEventListener("click", (event) => {
           event.preventDefault();
-          if (marker?.contains(event.target)) {
+          if (toggle?.contains(event.target)) {
             details.open = !details.open;
           }
         });
