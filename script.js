@@ -686,8 +686,10 @@ ${dialogSelector} {
 
   function autoResizeTextarea(textarea) {
     textarea.style.height = "auto";
+    const minHeight = 24;
     const maxHeight = textarea.closest("section").clientHeight / 2;
-    textarea.style.height = Math.min(maxHeight, textarea.scrollHeight) + "px";
+    textarea.style.height =
+      Math.max(minHeight, Math.min(maxHeight, textarea.scrollHeight)) + "px";
   }
 
   function processHtmlStartTag(htmlText, htmlElement, indent = 0) {
