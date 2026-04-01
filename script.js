@@ -920,9 +920,15 @@ ${dialogSelector} {
 
       const hashTableID =
         customCssTextareaForElement.getAttribute(dataHashTableID);
-      const attributeInput = dialog
-        .querySelector(`.start-tag[${dataHashTableID}="${hashTableID}"]`)
-        .querySelector(".attribute-input");
+      const startTag = dialog.querySelector(
+        `.start-tag[${dataHashTableID}="${hashTableID}"]`,
+      );
+      const allAttributeInputs = [
+        ...startTag.querySelectorAll(".attribute-input"),
+      ];
+      const attributeInput =
+        allAttributeInputs.find((input) => /^style\s*=/i.test(input.value)) ??
+        allAttributeInputs[0];
 
       const previousText = attributeInput.value;
       attributeInput.value = styleValue ? `style="${styleValue}"` : "";
