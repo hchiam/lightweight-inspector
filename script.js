@@ -475,18 +475,6 @@ ${dialogSelector} {
     return null;
   }
 
-  function addCollapseToggle(section, onExpand) {
-    const btn = el("button", "-", { class: "section-collapse-btn" });
-    btn.title = "collapse section";
-    btn.addEventListener("click", () => {
-      const collapsed = section.classList.toggle("collapsed");
-      btn.textContent = collapsed ? "+" : "-";
-      btn.title = collapsed ? "expand section" : "collapse section";
-      if (!collapsed) onExpand?.();
-    });
-    section.prepend(btn);
-  }
-
   function inspect() {
     inspectHTML();
     inspectCSS();
@@ -531,6 +519,18 @@ ${dialogSelector} {
     addCollapseToggle(htmlInspector);
 
     repopulateHtmlInspector(htmlInspector);
+  }
+
+  function addCollapseToggle(section, onExpand) {
+    const btn = el("button", "-", { class: "section-collapse-btn" });
+    btn.title = "collapse section";
+    btn.addEventListener("click", () => {
+      const collapsed = section.classList.toggle("collapsed");
+      btn.textContent = collapsed ? "+" : "-";
+      btn.title = collapsed ? "expand section" : "collapse section";
+      if (!collapsed) onExpand?.();
+    });
+    section.prepend(btn);
   }
 
   function repopulateHtmlInspector(htmlInspector) {
