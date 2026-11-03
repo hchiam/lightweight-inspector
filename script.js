@@ -819,7 +819,7 @@ ${dialogSelector} {
         currentText === "" || /^[^=]+?="[^"]*?"$/.test(currentText);
       if (!isValidAttribute) {
         alert(
-          'attribute needs to be formatted as atttribute="" even if "" is empty',
+          'attribute needs to be formatted as attribute="" even if "" is empty',
         );
         attributeInput.value = previousText;
       } else {
